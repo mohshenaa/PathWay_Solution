@@ -1,0 +1,6 @@
+@PathWay_Solution_HostAddress = http://localhost:5251
+
+GET {{PathWay_Solution_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
