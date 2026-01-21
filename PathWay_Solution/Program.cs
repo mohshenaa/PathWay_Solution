@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PathWay_Solution.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +14,19 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddDbContext<PathWayDB>(opt =>
-//{
-//    opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-//});
+builder.Services.AddDbContext<PathwayDBContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
+});
+
+//  IdentityUser and IdentityRole represent the default user and role entities
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<PathwayDBContext>();
+
+//builder.Services.AddIdentityCore<IdentityUser>()   // AddIdentityCore for restapi and frontend ,jwt
+//    .AddRoles<IdentityRole>()
+//    .AddEntityFrameworkStores<PathwayDBContext>();
+
 
 var app = builder.Build();
 
@@ -37,5 +48,6 @@ app.UseAuthorization(); //4th
 
 app.MapControllers();
 
-app.MapGet("/",()=>"");
+//app.MapGet("/",()=>"");
+
 app.Run();
