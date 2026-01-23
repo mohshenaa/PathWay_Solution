@@ -1,6 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PathWay_Solution.Data;
+using PathWay_Solution.Data.Seeder;
+using PathWay_Solution.IdentityModels;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +14,33 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddAuthentication().AddJwtBearer();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
+
+// for who what can do
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("AdminOnly", policy =>
+    policy.RequireRole("Admin"));
+
+    opt.AddPolicy("AdminOrCounterStaff", policy =>
+    policy.RequireRole("Admin", "CounterStaff"));
+});
 
 builder.Services.AddSwaggerGen();
 
@@ -20,8 +50,16 @@ builder.Services.AddDbContext<PathwayDBContext>(opt =>
 });
 
 //  IdentityUser and IdentityRole represent the default user and role entities
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<PathwayDBContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+{
+    opt.Password.RequiredLength = 5;
+    opt.Password.RequireUppercase = true;
+    opt.Password.RequireLowercase = true;
+    opt.Password.RequireDigit = true;
+    opt.Password.RequireNonAlphanumeric = true;
+})
+    .AddEntityFrameworkStores<PathwayDBContext>()
+    .AddDefaultTokenProviders();
 
 //builder.Services.AddIdentityCore<IdentityUser>()   // AddIdentityCore for restapi and frontend ,jwt
 //    .AddRoles<IdentityRole>()
@@ -29,6 +67,16 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 
 var app = builder.Build();
+
+// Identity + RoleManager
+using (var scope = app.Services.CreateScope())
+{
+    var rolemanager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+    var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+    await RoleSeeder.SeedAsync(rolemanager);
+    await AdminUserSeeder.SeedAsync(usermanager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) //1st:developerException

@@ -27,10 +27,14 @@ namespace PathWay_Solution.IdentityModels
         [Phone(ErrorMessage = "Please enter a valid Phone number")]
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; } = default!;
+
+
         [Required]
         [DataType(DataType.Password)]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters.")]
         public string Password { get; set; } = null!;
+
+
         [Required]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
