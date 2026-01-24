@@ -194,7 +194,13 @@ namespace PathWay_Solution.Data
 
                 entity.HasOne(e => e.Trip)
               .WithMany(t => t.TripStops)
-              .HasForeignKey(e => e.TripId);
+              .HasForeignKey(e => e.TripId)
+              .OnDelete(DeleteBehavior.Restrict);
+             
+               entity.HasOne(a =>a.Location)
+              .WithMany()
+              .HasForeignKey(a => a.LocationId)
+              .OnDelete(DeleteBehavior.NoAction);
             });
 
             //seat
