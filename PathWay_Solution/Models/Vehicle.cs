@@ -1,14 +1,31 @@
 ﻿namespace PathWay_Solution.Models
 {
-    public abstract class Vehicle
+    public abstract class Vehicle   //for c# oop structure
     {
         public int VehicleId { get; set; }
         public string VehicleNumber { get; set; } = null!;
         public int Capacity { get; set; }
-
+        public int Doors { get; set; }
+        public string ImageUrl { get; set; } = "";
         public string? Status { get; set; } = "Available";
-
-        public ICollection<Trip>? Trips {  get; set; }
-        public ICollection<VehicleMaintenance>? VehicleMaintenances {  get; set; }
+        public ICollection<Trip>? Trips { get; set; }
+        public ICollection<VehicleMaintenance>? VehicleMaintenances { get; set; }
+    }
+    public class Bus : Vehicle
+    {
+        public bool HasAC { get; set; }
+        public int StandingCapacity { get; set; }
+    }
+    public class MiniBus : Vehicle
+    {
+        public bool HasAC { get; set; }
+    }
+    public class Car : Vehicle
+    {
+        public string CarCategory { get; set; } = null!; //differentiate by interior ,model,speed
+    }
+    public class Micro : Vehicle
+    {
+        public string MicroCategory { get; set; } = null!; //differentiate by interior ,model,speed
     }
 }
