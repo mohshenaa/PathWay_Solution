@@ -1,11 +1,13 @@
 ﻿using PathWay_Solution.IdentityModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace PathWay_Solution.Models
 {
     public class Notification
     {
+        [Key]
         public int NotificationId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid AppUserId { get; set; }
 
         public string Message { get; set; } = null!;
         public bool IsRead { get; set; } = false;

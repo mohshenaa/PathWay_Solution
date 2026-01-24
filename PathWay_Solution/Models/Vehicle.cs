@@ -1,8 +1,13 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public abstract class Vehicle   //for c# oop structure
     {
+        [Key]
         public int VehicleId { get; set; }
+
+        [Required,StringLength(50)]
         public string VehicleNumber { get; set; } = null!;
         public int Capacity { get; set; }
         public int Doors { get; set; }

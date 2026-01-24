@@ -1,7 +1,10 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public class Seat
     {
+        [Key]
         public int SeatId { get; set; }
         public int TripId { get; set; }
         public string SeatNumber { get; set; } = null!;

@@ -1,7 +1,10 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public class TripSchedule
     {
+        [Key]
         public int TripScheduleId { get; set; }
         public int RouteId { get; set; }
         public string VehicleType { get; set; } = "Bus";

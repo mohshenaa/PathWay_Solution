@@ -5,7 +5,8 @@ namespace PathWay_Solution.IdentityModels
 {
     public class Address
     {
-        public int Id { get; set; }
+        [Key]
+        public int AddressId { get; set; }
 
         [Required]
         [ForeignKey(nameof(UserId))]

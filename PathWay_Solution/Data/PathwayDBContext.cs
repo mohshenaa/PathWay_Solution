@@ -23,19 +23,28 @@ namespace PathWay_Solution.Data
             //builder.Entity<AppUser>().ToTable("users");
 
 
-
-            builder.Entity<Address>()
-                .HasOne(a => a.AppUser)
+            //address
+            builder.Entity<Address>(entity =>
+            {
+                entity.HasOne(a => a.AppUser)
                 .WithMany(a => a.Address)
                 .HasForeignKey(a => a.UserId);
+            });
 
+            //vehicle
+            builder.Entity<Vehicle>(entity =>
+            {
+                entity.HasMany(a => a.Trips)
+                .WithOne(a => a.Vehicle)
+                .HasForeignKey(a => a.VehicleId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Vehicle>()
-           .HasDiscriminator<string>("VehicleType")
-           .HasValue<Bus>("Bus")
-           .HasValue<MiniBus>("MiniBus")
-           .HasValue<Car>("Car")
-           .HasValue<Micro>("Micro");
+                entity.HasDiscriminator<string>("VehicleType")
+               .HasValue<Bus>("Bus")
+               .HasValue<MiniBus>("MiniBus")
+               .HasValue<Car>("Car")
+               .HasValue<Micro>("Micro");
+            });
 
             //seed for bus
             builder.Entity<Bus>().HasData(
@@ -94,8 +103,6 @@ namespace PathWay_Solution.Data
             //employee
             builder.Entity<Employee>(entity =>
             {
-                entity.HasKey(a => a.EmployeeId);
-
                 entity.HasMany(a => a.Salaries)
                 .WithOne(a => a.Employee)
                 .HasForeignKey(a => a.EmployeeId)
@@ -105,8 +112,7 @@ namespace PathWay_Solution.Data
             //driver
             builder.Entity<Driver>(entity =>
             {
-                entity.HasKey(a => a.DriverId);
-
+               
                 entity.HasOne(a => a.Employee)
                 .WithOne()
                 .HasForeignKey<Driver>(a => a.EmployeeId)
@@ -118,11 +124,11 @@ namespace PathWay_Solution.Data
                 .OnDelete(DeleteBehavior.Restrict);
             });
 
+
             //helper
             builder.Entity<Helper>(entity =>
             {
-                entity.HasKey(a => a.HelperId);
-
+               
                 entity.HasOne(a => a.Employee)
                 .WithOne()
                 .HasForeignKey<Helper>(a => a.EmployeeId)
@@ -137,8 +143,6 @@ namespace PathWay_Solution.Data
             //counterstaff
             builder.Entity<CounterStaff>(entity =>
             {
-                entity.HasKey(a => a.CounterStaffId);
-
                 entity.HasOne(a => a.Employee)
                .WithOne()
                .HasForeignKey<CounterStaff>(a => a.EmployeeId)
@@ -151,11 +155,10 @@ namespace PathWay_Solution.Data
 
 
             });
+
             //salary
             builder.Entity<Salary>(entity =>
-            {
-                entity.HasKey(a => a.SalaryId);
-
+            {                
                 entity.HasOne(a => a.Employee)
                 .WithMany(a => a.Salaries)
                 .HasForeignKey(a => a.EmployeeId)
@@ -165,8 +168,6 @@ namespace PathWay_Solution.Data
             //trip
             builder.Entity<Trip>(entity =>
             {
-                entity.HasKey(a => a.TripId);
-
                 entity.HasOne(a => a.Driver)
                 .WithMany(a => a.Trips)
                 .HasForeignKey(a => a.DriverId)
@@ -176,6 +177,113 @@ namespace PathWay_Solution.Data
                 .WithMany(a => a.Trips)
                 .HasForeignKey(a => a.HelperId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a=>a.Routes)
+                .WithMany(a=>a.Trips)
+                .HasForeignKey(a=>a.RouteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(a => a.Seats)
+                .WithOne(a => a.Trip)
+                .HasForeignKey(a => a.TripId);
+            });
+
+            //trip stop
+            builder.Entity<TripStop>(entity =>
+            {
+
+                entity.HasOne(e => e.Trip)
+              .WithMany(t => t.TripStops)
+              .HasForeignKey(e => e.TripId);
+            });
+
+            //seat
+            builder.Entity<Seat>(entity =>
+            {
+
+                entity.HasOne(a => a.Trip)
+                .WithMany(a => a.Seats)
+                .HasForeignKey(a => a.TripId);
+            });
+
+            //booking
+            builder.Entity<Booking>(entity =>
+            {
+
+                entity.HasOne(a => a.Passenger)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.PassengerId);
+
+                entity.HasOne(a => a.Trip)
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.TripId);
+            });
+
+            //payment
+            builder.Entity<Payment>(entity =>
+            {
+
+                entity.HasOne(a => a.Booking)
+                .WithOne(a => a.Payment)
+                .HasForeignKey<Payment>(a => a.BookingId);
+            });
+
+            //Cancellation Refund
+            builder.Entity<CancellationRefund>(entity =>
+            {
+
+                entity.HasOne(a => a.Booking)
+                .WithOne(a => a.CancellationRefund)
+                .HasForeignKey<CancellationRefund>(a => a.BookingId);
+            });
+
+
+            //vehicle maintenance
+            builder.Entity<VehicleMaintenance>(entity =>
+            {
+
+                entity.HasOne(a => a.Vehicle)
+                .WithMany(a=>a.VehicleMaintenances)
+                .HasForeignKey (a=>a.VehicleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            //routes
+            builder.Entity<Routes>(entity =>
+            {
+
+                entity.HasOne(a => a.FromLocation)
+                .WithMany()
+                .HasForeignKey(a => a.FromLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.ToLocation)
+                .WithMany()
+                .HasForeignKey(a => a.ToLocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            //review
+            builder.Entity<ReviewRating>(entity =>
+            {
+
+                entity.HasOne(a => a.Passenger)
+                .WithMany(a => a.Reviews)
+                .HasForeignKey(a => a.PassengerId);
+
+                entity.HasOne(a => a.Trip)
+                .WithMany(a => a.ReviewRatings)
+                .HasForeignKey(a => a.TripId);
+            });
+
+            //notification
+            builder.Entity<Notification>(entity =>
+            {
+
+                entity.HasOne(a => a.AppUser)
+                .WithMany()
+                .HasForeignKey(a => a.AppUserId);
             });
         }
 

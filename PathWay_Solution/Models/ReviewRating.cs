@@ -1,7 +1,10 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public class ReviewRating
     {
+        [Key]
         public int ReviewRatingId { get; set; }
         public int PassengerId { get; set; }
         public int TripId { get; set; }

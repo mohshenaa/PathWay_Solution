@@ -5,6 +5,7 @@ namespace PathWay_Solution.Models
 {
     public class Salary
     {
+        [Key]
         public int SalaryId { get; set; }
 
         public int EmployeeId { get; set; }

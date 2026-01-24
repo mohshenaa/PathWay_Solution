@@ -1,9 +1,11 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 
 namespace PathWay_Solution.Models
 {
     public class Routes
     {
+        [Key]
         public int RouteId { get; set; }
         public int FromLocationId { get; set; }
         public int ToLocationId { get; set; }

@@ -1,7 +1,10 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public class Helper
     {
+        [Key]
         public int HelperId { get; set; }
         public int EmployeeId { get; set; }
 

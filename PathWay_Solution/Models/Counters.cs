@@ -1,7 +1,10 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public class Counters
     {
+        [Key]
         public int CounterId { get; set; }
         public int RouteId { get; set; }
         public int? CounterStaffId { get; set; }

@@ -5,6 +5,7 @@ namespace PathWay_Solution.Models
 {
     public class Passenger
     {
+        [Key]
         public int PassengerId { get; set; }
         public Guid UserId { get; set; }
 

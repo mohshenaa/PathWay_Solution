@@ -1,7 +1,10 @@
-﻿namespace PathWay_Solution.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PathWay_Solution.Models
 {
     public class VehicleMaintenance
     {
+        [Key]
         public int VehicleMaintenanceId { get; set; }
         public int VehicleId { get; set; }
 

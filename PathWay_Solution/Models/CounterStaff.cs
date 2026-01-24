@@ -1,9 +1,11 @@
-﻿using System.Diagnostics.Metrics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 
 namespace PathWay_Solution.Models
 {
     public class CounterStaff
     {
+        [Key]
         public int CounterStaffId { get; set; }
         public int EmployeeId { get; set; }
         public int CounterId { get; set; }

@@ -4,6 +4,7 @@ namespace PathWay_Solution.Models
 {
     public class Employee
     {
+        [Key]
         public int EmployeeId { get; set; }
 
         [Required,StringLength(maximumLength:50)]

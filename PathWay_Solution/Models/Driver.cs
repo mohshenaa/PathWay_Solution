@@ -4,6 +4,7 @@ namespace PathWay_Solution.Models
 {
     public class Driver
     {
+        [Key]
         public int DriverId { get; set; }
         public int EmployeeId { get; set; }
 

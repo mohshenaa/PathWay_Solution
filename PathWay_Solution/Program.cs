@@ -50,7 +50,7 @@ builder.Services.AddDbContext<PathwayDBContext>(opt =>
 });
 
 //  IdentityUser and IdentityRole represent the default user and role entities
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+builder.Services.AddIdentity<AppUser,AppRole>(opt =>
 {
     opt.Password.RequiredLength = 5;
     opt.Password.RequireUppercase = true;
@@ -76,6 +76,7 @@ using (var scope = app.Services.CreateScope())
 
     await RoleSeeder.SeedAsync(rolemanager);
     await AdminUserSeeder.SeedAsync(usermanager);
+    await CounterStaffSeeder.SeedAsync(usermanager);
 }
 
 // Configure the HTTP request pipeline.
