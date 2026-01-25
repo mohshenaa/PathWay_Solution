@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PathWay_Solution.Models
 {
@@ -13,6 +14,8 @@ namespace PathWay_Solution.Models
         public int? SeatId { get; set; } // null for car/micro full rent
         public DateTime BookingDate { get; set; } = DateTime.Now;
         public string BookingSource { get; set; } = "Online"; // online or counter
+
+        [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = "Confirmed"; // confirmed, cancelled
         public Passenger Passenger { get; set; } = null!;
