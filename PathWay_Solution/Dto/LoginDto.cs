@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PathWay_Solution.IdentityModels
+namespace PathWay_Solution.Dto
 {
     public class LoginDto
     {

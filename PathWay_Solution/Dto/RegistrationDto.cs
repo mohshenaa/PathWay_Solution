@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace PathWay_Solution.IdentityModels
+namespace PathWay_Solution.Dto
 {
     public class RegistrationDto
     {
@@ -40,5 +40,7 @@ namespace PathWay_Solution.IdentityModels
         [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; } = null!;
+
+        public string? Role { get; set; }
     }
 }

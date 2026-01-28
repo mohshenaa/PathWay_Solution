@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PathWay_Solution.Models.ApplicationModels;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 
 namespace PathWay_Solution.Models

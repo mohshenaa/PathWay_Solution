@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PathWay_Solution.Models
+namespace PathWay_Solution.Models.ApplicationModels
 {
     public class Counters
     {

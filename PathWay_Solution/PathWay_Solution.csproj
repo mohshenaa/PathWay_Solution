@@ -16,10 +16,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+	 
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.0" />
+ 
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\ApplicationControllers\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

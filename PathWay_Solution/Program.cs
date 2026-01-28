@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using PathWay_Solution.Data;
 using PathWay_Solution.Data.Seeder;
-using PathWay_Solution.IdentityModels;
+using PathWay_Solution.Models.IdentityModels;
+using System;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi();
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -29,7 +32,9 @@ builder.Services.AddAuthentication(opt =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        RoleClaimType = ClaimTypes.Role,    
+        NameClaimType = ClaimTypes.NameIdentifier 
     };
 });
 
@@ -43,7 +48,52 @@ builder.Services.AddAuthorization(opt =>
     policy.RequireRole("Admin", "CounterStaff"));
 });
 
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+
+//builder.Services.AddSwaggerGen(options =>
+//{
+//    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+//    {
+//        Name = "Authorization",
+//        In = ParameterLocation.Header,
+//        Type = SecuritySchemeType.Http,
+//        Scheme = "Bearer",
+//        BearerFormat = "JWT"
+//    });
+
+//    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+//    {
+//        {
+//            new OpenApiSecurityScheme
+//            {
+//                Reference = new OpenApiReference
+//                {
+//                    Type = ReferenceType.SecurityScheme,
+//                    Id = "Bearer"
+//                }
+//            },
+//            Array.Empty<string>()
+//        }
+//    });
+//});
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {   
+         [   new OpenApiSecuritySchemeReference("Bearer", document)] = []
+        
+    });
+});
 
 builder.Services.AddDbContext<PathwayDBContext>(opt =>
 {
@@ -51,20 +101,32 @@ builder.Services.AddDbContext<PathwayDBContext>(opt =>
 });
 
 //  IdentityUser and IdentityRole represent the default user and role entities
-builder.Services.AddIdentity<AppUser,AppRole>(opt =>
-{
-    opt.Password.RequiredLength = 5;
-    opt.Password.RequireUppercase = true;
-    opt.Password.RequireLowercase = true;
-    opt.Password.RequireDigit = true;
-    opt.Password.RequireNonAlphanumeric = true;
-})
-    .AddEntityFrameworkStores<PathwayDBContext>()
-    .AddDefaultTokenProviders();
 
-//builder.Services.AddIdentityCore<IdentityUser>()   // AddIdentityCore for restapi and frontend ,jwt
-//    .AddRoles<IdentityRole>()
+////mvc+api
+//builder.Services.AddIdentity<AppUser,AppRole>(opt =>
+//{
+//    opt.Password.RequiredLength = 5;
+//    opt.Password.RequireUppercase = true;
+//    opt.Password.RequireLowercase = true;
+//    opt.Password.RequireDigit = true;
+//    opt.Password.RequireNonAlphanumeric = true;
+//})
+//    .AddEntityFrameworkStores<PathwayDBContext>()
+//    .AddDefaultTokenProviders();
+
+//builder.Services.AddIdentityCore<AppUser>()   // AddIdentityCore for restapi and frontend ,jwt
+//    .AddRoles<AppRole>()
 //    .AddEntityFrameworkStores<PathwayDBContext>();
+
+builder.Services
+    .AddIdentityCore<AppUser>(options =>
+    {
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddRoles<AppRole>()
+    .AddEntityFrameworkStores<PathwayDBContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders();
 
 
 var app = builder.Build();
@@ -85,7 +147,7 @@ if (app.Environment.IsDevelopment()) //1st:developerException
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.MapOpenApi();
+    //app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();

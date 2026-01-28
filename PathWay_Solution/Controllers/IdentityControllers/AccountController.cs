@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PathWay_Solution.IdentityModels;
+using PathWay_Solution.Dto;
+using PathWay_Solution.Models.IdentityModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace PathWay_Solution.Controllers
+namespace PathWay_Solution.Controllers.IdentityControllers
 {
     [Route("api/[controller]")]
     [ApiController]

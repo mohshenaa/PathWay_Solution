@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PathWay_Solution.IdentityModels;
+using PathWay_Solution.Models.IdentityModels;
 
 namespace PathWay_Solution.Data.Seeder
 {

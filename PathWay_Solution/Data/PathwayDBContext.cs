@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PathWay_Solution.IdentityModels;
 using PathWay_Solution.Models;
+using PathWay_Solution.Models.ApplicationModels;
+using PathWay_Solution.Models.IdentityModels;
 using System.Reflection.Emit;
 
 namespace PathWay_Solution.Data
@@ -13,6 +14,28 @@ namespace PathWay_Solution.Data
         }
 
         public DbSet<Address> Address { get; set; }
+        public DbSet<Booking> Booking { get; set; }
+        public DbSet<CancellationRefund> CancellationRefund { get; set; }
+        public DbSet<Counters> Counters { get; set; }
+        public DbSet<CounterStaff> AdCounterStaffdress { get; set; }
+        public DbSet<Driver> Driver { get; set; }
+        public DbSet<Employee> Employee { get; set; }
+        public DbSet<Expense> Expense { get; set; }
+        public DbSet<Helper> Helper { get; set; }
+        public DbSet<Location> Location { get; set; }
+        public DbSet<Notification> Notification { get; set; }
+        public DbSet<Passenger> Passenger { get; set; }
+        public DbSet<Payment> Payment { get; set; }
+        public DbSet<ReportAnalytics> ReportAnalytics { get; set; }
+        public DbSet<ReviewRating> ReviewRating { get; set; }
+        public DbSet<Routes> Routes { get; set; }
+        public DbSet<Salary> Salary { get; set; }
+        public DbSet<Seat> Seat { get; set; }
+        public DbSet<Trip> Trip { get; set; }
+        public DbSet<TripSchedule> TripSchedule { get; set; }
+        public DbSet<TripStop> TripStop { get; set; }
+        public DbSet<Vehicle> Vehicle { get; set; }
+        public DbSet<VehicleMaintenance> VehicleMaintenance { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

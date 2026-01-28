@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace PathWay_Solution.IdentityModels
+namespace PathWay_Solution.Models.IdentityModels
 {
     public class AppRole:IdentityRole<Guid>
     {

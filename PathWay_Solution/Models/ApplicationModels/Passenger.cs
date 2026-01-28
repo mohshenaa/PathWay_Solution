@@ -1,4 +1,5 @@
-﻿using PathWay_Solution.IdentityModels;
+﻿using PathWay_Solution.Models.ApplicationModels;
+using PathWay_Solution.Models.IdentityModels;
 using System.ComponentModel.DataAnnotations;
 
 namespace PathWay_Solution.Models

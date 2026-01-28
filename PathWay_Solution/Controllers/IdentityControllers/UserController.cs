@@ -3,22 +3,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PathWay_Solution.IdentityModels;
+using Microsoft.Extensions.Logging;
+using PathWay_Solution.Models.IdentityModels;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
-namespace PathWay_Solution.Controllers
+namespace PathWay_Solution.Controllers.IdentityControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize("Admin")]
-    public class AdminController : ControllerBase
+   [Authorize(Roles ="Admin")]
+    public class UserController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
+        private readonly ILogger<UserController> _logger;
 
-        public AdminController(UserManager<AppUser> userManager,RoleManager<AppRole> roleManager)
+        public UserController(UserManager<AppUser> userManager,RoleManager<AppRole> roleManager, ILogger<UserController> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         [HttpGet("users")]
@@ -44,10 +49,21 @@ namespace PathWay_Solution.Controllers
                     LastLogin = user.LastLogin,
                     CreatedOn = user.CreatedOn,
                     ModifiedOn = user.ModifiedOn,
-
+                    Roles = roles
                 });
             }
             return Ok( UserWithRole);
         }
+
+
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var role= await _roleManager.Roles.Select(a => new {a.Id,a.Name,a.CreatedOn,a.Description}).ToListAsync();
+            return Ok( role );
+        }
+
+
+       
     }
 }

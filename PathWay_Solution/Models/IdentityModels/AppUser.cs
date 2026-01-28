@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Identity.Client;
 
-namespace PathWay_Solution.IdentityModels
+namespace PathWay_Solution.Models.IdentityModels
 {
     public class AppUser:IdentityUser<Guid>
     {

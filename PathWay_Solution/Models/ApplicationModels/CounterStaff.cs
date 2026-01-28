@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 
-namespace PathWay_Solution.Models
+namespace PathWay_Solution.Models.ApplicationModels
 {
     public class CounterStaff
     {
