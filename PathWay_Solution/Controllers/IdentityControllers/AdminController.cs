@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PathWay_Solution.Data.Seeder;
@@ -14,13 +13,13 @@ namespace PathWay_Solution.Controllers.IdentityControllers
     public class AdminController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-     
+
         public AdminController(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
         }
 
-       
+
         [HttpPost("create-DriverOrStaff")]
         public async Task<IActionResult> CreateDriverOrStaff(DriverAndStaffCreateDto dto)
         {

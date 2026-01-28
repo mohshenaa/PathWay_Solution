@@ -6,6 +6,7 @@ using Microsoft.OpenApi;
 using PathWay_Solution.Data;
 using PathWay_Solution.Data.Seeder;
 using PathWay_Solution.Models.IdentityModels;
+using PathWay_Solution.Services;
 using System;
 using System.Security.Claims;
 using System.Text;
@@ -128,6 +129,7 @@ builder.Services
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IImageUpload,ImageUpload>();
 
 var app = builder.Build();
 

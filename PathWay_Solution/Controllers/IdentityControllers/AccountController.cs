@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PathWay_Solution.Dto;
@@ -21,11 +20,11 @@ namespace PathWay_Solution.Controllers.IdentityControllers
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
         RoleManager<AppRole> roleManager, IConfiguration configuration)
-        {         
+        {
             _userManager = userManager;
-            _signInManager= signInManager;
-            _roleManager= roleManager;
-            _configuration= configuration;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -59,8 +58,8 @@ namespace PathWay_Solution.Controllers.IdentityControllers
         [HttpPost("login")]
         public async Task<IActionResult> login(LoginDto dto)
         {
-            var user= await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null|| !await _userManager.CheckPasswordAsync(user,dto.Password))
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 return Unauthorized("Invalid Credential!");
             }
@@ -86,13 +85,11 @@ namespace PathWay_Solution.Controllers.IdentityControllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:DurationMinutes"])) , signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:DurationMinutes"])), signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );
 
-            return Ok(new
-            {
-                token= new JwtSecurityTokenHandler().WriteToken(token)
-            });
+            return Ok(new JwtSecurityTokenHandler().WriteToken(token)
+            );
         }
     }
 }
