@@ -47,6 +47,7 @@ namespace PathWay_Solution.Controllers.IdentityControllers
                     LastLogin = user.LastLogin,
                     CreatedOn = user.CreatedOn,
                     ModifiedOn = user.ModifiedOn,
+                    Address = user.Address,
                     Roles = roles
                 });
             }

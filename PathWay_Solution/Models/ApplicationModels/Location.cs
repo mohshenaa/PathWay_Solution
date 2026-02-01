@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography.Pkcs;
 
 namespace PathWay_Solution.Models
 {
@@ -12,6 +13,7 @@ namespace PathWay_Solution.Models
         public ICollection<Routes>? RoutesFrom { get; set; }
         public ICollection<Routes>? RoutesTo { get; set; }
         public ICollection<TripStop>? TripStops { get; set; }
+       
     }
 
 }
