@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
+using PathWay_Solution.Dto;
 using PathWay_Solution.Models;
 
 namespace PathWay_Solution.Controllers.ApplicationControllers
@@ -37,59 +38,65 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateLocation(Location location)
+        public async Task<IActionResult> CreateLocation(LocationCreateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var lastlocation = await db.Location.OrderByDescending(a => a.LocationId).FirstOrDefaultAsync();
-            location.LocationId = lastlocation == null ? 1 : lastlocation.LocationId + 1;
+            var location = new Location
+            {
+                Name = dto.LocationName
+            };
 
             db.Location.Add(location);
             await db.SaveChangesAsync();
 
-            //var createdLocation= await db.Location
-            //    .Include(a=>a.RoutesFrom)
-            //    .Include(a=>a.RoutesTo)
-            //    .Include(a=>a.TripStops)
-            //    .FirstOrDefaultAsync();
-            //return Ok(createdLocation);
-
-            return Ok(location);
+            var response = new LocationResponseDto
+            {
+                LocationId = location.LocationId,
+                LocationName = location.Name
+            };
+     
+            return Ok(response);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLocation(int id, Location location)
+        public async Task<IActionResult> UpdateLocation(int id, LocationResponseDto dto)
         {
-            if (id != location.LocationId) return BadRequest(new { message = "Id doesn't matched!" });
+            if (id != dto.LocationId) return BadRequest(new { message = "Id doesn't matched!" });
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            db.Entry(location).State = EntityState.Modified;
+          var location=await db.Location.FindAsync(id);
 
+            if(location == null) return NotFound();
+
+            location.Name = dto.LocationName;
+           
             try
             {
+              
                 await db.SaveChangesAsync();
+               
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!locationExits(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(409,"Conflict!");
             }
-            return Ok();
+            var response = new LocationResponseDto
+            {
+                LocationId = location.LocationId,
+                LocationName = location.Name
+            };
+
+            return Ok(response);
         }
        
-        private bool locationExits(int id)
-        {
-            return db.Location.Count(a => a.LocationId == id) > 0;
-        }
+        //private bool locationExits(int id)
+        //{
+        //    return db.Location.Count(a => a.LocationId == id) > 0;
+        //}
 
 
         [HttpDelete("{id}")]
