@@ -18,19 +18,30 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             var location = await db.Location
                 .Include(a => a.RoutesFrom)
                 .Include(a => a.RoutesTo)
-                .Include(a => a.TripStops).ToListAsync();
+                .Include(a => a.TripStops)
+                //.Select(a => new
+                //{
+                //    a.LocationId,
+                //    a.Name,
+                //    a.TripStops,
+                //    a.RoutesFrom,
+                //    a.RoutesTo
+                //})
+                .ToListAsync();
             return Ok(location);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetLocationById(int? id)
         {
-            if (id == null) return BadRequest("Id is required!");
+            //if (id == null) return BadRequest("Id is required!");
 
-            var location = await db.Location
-                .Include(a => a.RoutesFrom)
-                .Include(a => a.RoutesTo)
-                .Include(a => a.TripStops).FirstOrDefaultAsync(a => a.LocationId == id);
+            //var location = await db.Location
+            //    .Include(a => a.RoutesFrom)
+            //    .Include(a => a.RoutesTo)
+            //    .Include(a => a.TripStops).FirstOrDefaultAsync(a => a.LocationId == id);
+
+            var location = await db.Location.FindAsync(id);
 
             if (location == null) return BadRequest($"Location Id {id} is not found!");
 
