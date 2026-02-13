@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PathWay_Solution.Models.IdentityModels;
+using System.ComponentModel.DataAnnotations;
 
 namespace PathWay_Solution.Models
 {
@@ -18,9 +19,11 @@ namespace PathWay_Solution.Models
         public string? Email { get; set; }
         public string ImageUrl { get; set; } = "";
 
-        public bool HasLogin { get; set; } = false; 
+        public bool HasLogin { get; set; } = false;
 
-        public string? AppUserId { get; set; }
+        public Guid? AppUserId { get; set; }
+        public AppUser? AppUser { get; set; }
+
         public bool IsActive { get; set; } = true;
         public ICollection<Salary>? Salaries { get; set; }
     }

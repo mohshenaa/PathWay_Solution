@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PathWay_Solution.Data;
 
@@ -11,9 +12,11 @@ using PathWay_Solution.Data;
 namespace PathWay_Solution.Migrations
 {
     [DbContext(typeof(PathwayDBContext))]
-    partial class PathwayDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260211152211_Pool")]
+    partial class Pool
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,9 +294,12 @@ namespace PathWay_Solution.Migrations
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
+                    b.Property<int>("RoutesRouteId")
+                        .HasColumnType("int");
+
                     b.HasKey("CounterId");
 
-                    b.HasIndex("RouteId");
+                    b.HasIndex("RoutesRouteId");
 
                     b.ToTable("Counters");
                 });
@@ -364,10 +370,6 @@ namespace PathWay_Solution.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("EmployeeId");
-
-                    b.HasIndex("AppUserId")
-                        .IsUnique()
-                        .HasFilter("[AppUserId] IS NOT NULL");
 
                     b.ToTable("Employee");
                 });
@@ -1245,13 +1247,13 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Counters", b =>
                 {
-                    b.HasOne("PathWay_Solution.Models.Routes", "Route")
+                    b.HasOne("PathWay_Solution.Models.Routes", "Routes")
                         .WithMany("Counters")
-                        .HasForeignKey("RouteId")
+                        .HasForeignKey("RoutesRouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Route");
+                    b.Navigation("Routes");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Driver", b =>
@@ -1263,16 +1265,6 @@ namespace PathWay_Solution.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Employee", b =>
-                {
-                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", "AppUser")
-                        .WithOne()
-                        .HasForeignKey("PathWay_Solution.Models.Employee", "AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.Expense", b =>

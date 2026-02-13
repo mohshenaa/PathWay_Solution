@@ -1,18 +1,22 @@
-﻿//using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-//namespace PathWay_Solution.Dto
-//{
-//    public class DriverCreateDto
-//    {
-//        public string DriverName { get; set; } = null!;
-//        public string LicenseNumber { get; set; } = null!;
-//    }
-//    public class DriverResponseDto
-//    {
-//        public int DriverId {  get; set; }
-//        public int EmployeeId { get; set; }
+namespace PathWay_Solution.Dto
+{
+    public class DriverCreateDto
+    {
+        [Required]
+        public int EmployeeId { get; set; }
 
-//        public string LicenseNumber { get; set; } = null!;
-//        public string DriverName {  get; set; } = null!;
-//    }
-//}
+        [Required, StringLength(100)]
+        public string LicenseNumber { get; set; } = null!;
+
+    }
+    public class DriverUpdateDto
+    {
+        public int DriverId { get; set; }
+        [Required, StringLength(100)]
+        public string LicenseNumber { get; set; } = null!;
+
+        public bool IsAvailable { get; set; }
+    }
+}

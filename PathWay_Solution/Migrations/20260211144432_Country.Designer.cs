@@ -12,8 +12,8 @@ using PathWay_Solution.Data;
 namespace PathWay_Solution.Migrations
 {
     [DbContext(typeof(PathwayDBContext))]
-    [Migration("20260124174800_City")]
-    partial class City
+    [Migration("20260211144432_Country")]
+    partial class Country
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,7 +128,274 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PathWay_Solution.IdentityModels.Address", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Booking", b =>
+                {
+                    b.Property<int>("BookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BookingSource")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CancellationRefundId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PassengerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SeatId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookingId");
+
+                    b.HasIndex("PassengerId");
+
+                    b.HasIndex("SeatId")
+                        .IsUnique()
+                        .HasFilter("[SeatId] IS NOT NULL");
+
+                    b.HasIndex("TripId");
+
+                    b.ToTable("Booking");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.CancellationRefund", b =>
+                {
+                    b.Property<int>("RefundId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundId"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("RefundAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("RefundDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("RefundId");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
+
+                    b.ToTable("CancellationRefund");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.CounterStaff", b =>
+                {
+                    b.Property<int>("CounterStaffId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CounterStaffId"));
+
+                    b.Property<int>("CounterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.HasKey("CounterStaffId");
+
+                    b.HasIndex("CounterId");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("CounterStaff");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Counters", b =>
+                {
+                    b.Property<int>("CounterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CounterId"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CounterName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CounterStaffId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RouteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoutesRouteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CounterId");
+
+                    b.HasIndex("RoutesRouteId");
+
+                    b.ToTable("Counters");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Driver", b =>
+                {
+                    b.Property<int>("DriverId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DriverId"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LicenseNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("DriverId");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("Driver");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.Employee", b =>
+                {
+                    b.Property<int>("EmployeeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
+
+                    b.Property<Guid?>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("HasLogin")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("EmployeeId");
+
+                    b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.Expense", b =>
+                {
+                    b.Property<int>("ExpenseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExpenseId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ExpenseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExpenseType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TripId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VehicleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExpenseId");
+
+                    b.HasIndex("TripId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("Expense");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.Helper", b =>
+                {
+                    b.Property<int>("HelperId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HelperId"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.HasKey("HelperId");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
+                    b.ToTable("Helper");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.IdentityModels.Address", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
@@ -172,7 +439,7 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.IdentityModels.AppRole", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.IdentityModels.AppRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,7 +479,7 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("PathWay_Solution.IdentityModels.AppUser", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.IdentityModels.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -298,229 +565,6 @@ namespace PathWay_Solution.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Booking", b =>
-                {
-                    b.Property<int>("BookingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
-
-                    b.Property<DateTime>("BookingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("BookingSource")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CancellationRefundId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PassengerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SeatId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BookingId");
-
-                    b.HasIndex("PassengerId");
-
-                    b.HasIndex("SeatId")
-                        .IsUnique()
-                        .HasFilter("[SeatId] IS NOT NULL");
-
-                    b.HasIndex("TripId");
-
-                    b.ToTable("Booking");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.CancellationRefund", b =>
-                {
-                    b.Property<int>("RefundId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundId"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("RefundAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("RefundDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("RefundId");
-
-                    b.HasIndex("BookingId")
-                        .IsUnique();
-
-                    b.ToTable("CancellationRefund");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.CounterStaff", b =>
-                {
-                    b.Property<int>("CounterStaffId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CounterStaffId"));
-
-                    b.Property<int>("CounterId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CounterStaffId");
-
-                    b.HasIndex("CounterId");
-
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
-
-                    b.ToTable("CounterStaff");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Counters", b =>
-                {
-                    b.Property<int>("CounterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CounterId"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CounterName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CounterStaffId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RouteId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoutesRouteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CounterId");
-
-                    b.HasIndex("RoutesRouteId");
-
-                    b.ToTable("Counters");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Driver", b =>
-                {
-                    b.Property<int>("DriverId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DriverId"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LicenseNumber")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("DriverId");
-
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
-
-                    b.ToTable("Driver");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Employee", b =>
-                {
-                    b.Property<int>("EmployeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
-
-                    b.Property<string>("EmployeeName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("EmployeeRole")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("EmployeeId");
-
-                    b.ToTable("Employee");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Helper", b =>
-                {
-                    b.Property<int>("HelperId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HelperId"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
-
-                    b.HasKey("HelperId");
-
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
-
-                    b.ToTable("Helper");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.Location", b =>
@@ -627,6 +671,26 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("Payment");
                 });
 
+            modelBuilder.Entity("PathWay_Solution.Models.ReportAnalytics", b =>
+                {
+                    b.Property<int>("ReportAnalyticsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportAnalyticsId"));
+
+                    b.Property<DateTime>("GeneratedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReportType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReportAnalyticsId");
+
+                    b.ToTable("ReportAnalytics");
+                });
+
             modelBuilder.Entity("PathWay_Solution.Models.ReviewRating", b =>
                 {
                     b.Property<int>("ReviewRatingId")
@@ -676,22 +740,12 @@ namespace PathWay_Solution.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LocationId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("ToLocationId")
                         .HasColumnType("int");
 
                     b.HasKey("RouteId");
 
                     b.HasIndex("FromLocationId");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("LocationId1");
 
                     b.HasIndex("ToLocationId");
 
@@ -857,9 +911,6 @@ namespace PathWay_Solution.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LocationId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
@@ -875,8 +926,6 @@ namespace PathWay_Solution.Migrations
                     b.HasKey("TripStopId");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("LocationId1");
 
                     b.HasIndex("RoutesRouteId");
 
@@ -1058,7 +1107,7 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppRole", null)
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1067,7 +1116,7 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", null)
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1076,7 +1125,7 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", null)
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1085,13 +1134,13 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppRole", null)
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", null)
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1100,25 +1149,14 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", null)
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PathWay_Solution.IdentityModels.Address", b =>
-                {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", "AppUser")
-                        .WithMany("Address")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Booking", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Booking", b =>
                 {
                     b.HasOne("PathWay_Solution.Models.Passenger", "Passenger")
                         .WithMany("Bookings")
@@ -1128,7 +1166,7 @@ namespace PathWay_Solution.Migrations
 
                     b.HasOne("PathWay_Solution.Models.Seat", "Seat")
                         .WithOne("Booking")
-                        .HasForeignKey("PathWay_Solution.Models.Booking", "SeatId");
+                        .HasForeignKey("PathWay_Solution.Models.ApplicationModels.Booking", "SeatId");
 
                     b.HasOne("PathWay_Solution.Models.Trip", "Trip")
                         .WithMany("Bookings")
@@ -1143,20 +1181,20 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("Trip");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.CancellationRefund", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.CancellationRefund", b =>
                 {
-                    b.HasOne("PathWay_Solution.Models.Booking", "Booking")
+                    b.HasOne("PathWay_Solution.Models.ApplicationModels.Booking", "Booking")
                         .WithOne("CancellationRefund")
-                        .HasForeignKey("PathWay_Solution.Models.CancellationRefund", "BookingId")
+                        .HasForeignKey("PathWay_Solution.Models.ApplicationModels.CancellationRefund", "BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Booking");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.CounterStaff", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.CounterStaff", b =>
                 {
-                    b.HasOne("PathWay_Solution.Models.Counters", "Counters")
+                    b.HasOne("PathWay_Solution.Models.ApplicationModels.Counters", "Counters")
                         .WithMany("CounterStaff")
                         .HasForeignKey("CounterId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1164,7 +1202,7 @@ namespace PathWay_Solution.Migrations
 
                     b.HasOne("PathWay_Solution.Models.Employee", "Employee")
                         .WithOne()
-                        .HasForeignKey("PathWay_Solution.Models.CounterStaff", "EmployeeId")
+                        .HasForeignKey("PathWay_Solution.Models.ApplicationModels.CounterStaff", "EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1173,7 +1211,7 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.Counters", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Counters", b =>
                 {
                     b.HasOne("PathWay_Solution.Models.Routes", "Routes")
                         .WithMany("Counters")
@@ -1184,15 +1222,30 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("Routes");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.Driver", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Driver", b =>
                 {
                     b.HasOne("PathWay_Solution.Models.Employee", "Employee")
                         .WithOne()
-                        .HasForeignKey("PathWay_Solution.Models.Driver", "EmployeeId")
+                        .HasForeignKey("PathWay_Solution.Models.ApplicationModels.Driver", "EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.Expense", b =>
+                {
+                    b.HasOne("PathWay_Solution.Models.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripId");
+
+                    b.HasOne("PathWay_Solution.Models.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId");
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.Helper", b =>
@@ -1206,9 +1259,20 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("PathWay_Solution.Models.IdentityModels.Address", b =>
+                {
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", "AppUser")
+                        .WithMany("Address")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("PathWay_Solution.Models.Notification", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", "AppUser")
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1219,7 +1283,7 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("PathWay_Solution.Models.Passenger", b =>
                 {
-                    b.HasOne("PathWay_Solution.IdentityModels.AppUser", "AppUser")
+                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", "AppUser")
                         .WithMany()
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1230,7 +1294,7 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("PathWay_Solution.Models.Payment", b =>
                 {
-                    b.HasOne("PathWay_Solution.Models.Booking", "Booking")
+                    b.HasOne("PathWay_Solution.Models.ApplicationModels.Booking", "Booking")
                         .WithOne("Payment")
                         .HasForeignKey("PathWay_Solution.Models.Payment", "BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1261,21 +1325,13 @@ namespace PathWay_Solution.Migrations
             modelBuilder.Entity("PathWay_Solution.Models.Routes", b =>
                 {
                     b.HasOne("PathWay_Solution.Models.Location", "FromLocation")
-                        .WithMany()
+                        .WithMany("RoutesFrom")
                         .HasForeignKey("FromLocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PathWay_Solution.Models.Location", null)
-                        .WithMany("RoutesFrom")
-                        .HasForeignKey("LocationId");
-
-                    b.HasOne("PathWay_Solution.Models.Location", null)
-                        .WithMany("RoutesTo")
-                        .HasForeignKey("LocationId1");
-
                     b.HasOne("PathWay_Solution.Models.Location", "ToLocation")
-                        .WithMany()
+                        .WithMany("RoutesTo")
                         .HasForeignKey("ToLocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1309,7 +1365,7 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("PathWay_Solution.Models.Trip", b =>
                 {
-                    b.HasOne("PathWay_Solution.Models.Driver", "Driver")
+                    b.HasOne("PathWay_Solution.Models.ApplicationModels.Driver", "Driver")
                         .WithMany("Trips")
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1363,14 +1419,10 @@ namespace PathWay_Solution.Migrations
             modelBuilder.Entity("PathWay_Solution.Models.TripStop", b =>
                 {
                     b.HasOne("PathWay_Solution.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("PathWay_Solution.Models.Location", null)
                         .WithMany("TripStops")
-                        .HasForeignKey("LocationId1");
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("PathWay_Solution.Models.Routes", "Routes")
                         .WithMany("TripStops")
@@ -1402,24 +1454,19 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.IdentityModels.AppUser", b =>
-                {
-                    b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.Booking", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Booking", b =>
                 {
                     b.Navigation("CancellationRefund");
 
                     b.Navigation("Payment");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.Counters", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Counters", b =>
                 {
                     b.Navigation("CounterStaff");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.Driver", b =>
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Driver", b =>
                 {
                     b.Navigation("Trips");
                 });
@@ -1432,6 +1479,11 @@ namespace PathWay_Solution.Migrations
             modelBuilder.Entity("PathWay_Solution.Models.Helper", b =>
                 {
                     b.Navigation("Trips");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.IdentityModels.AppUser", b =>
+                {
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.Location", b =>

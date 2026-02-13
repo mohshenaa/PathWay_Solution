@@ -12,8 +12,8 @@ using PathWay_Solution.Data;
 namespace PathWay_Solution.Migrations
 {
     [DbContext(typeof(PathwayDBContext))]
-    [Migration("20260208183209_Village")]
-    partial class Village
+    [Migration("20260211145946_World")]
+    partial class World
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,43 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Admin", b =>
+                {
+                    b.Property<int>("AdminId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
+
+                    b.Property<string>("AdminName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("AdminId");
+
+                    b.ToTable("Admin");
+                });
+
             modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Booking", b =>
                 {
                     b.Property<int>("BookingId")
@@ -221,6 +258,9 @@ namespace PathWay_Solution.Migrations
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
                     b.HasKey("CounterStaffId");
 
                     b.HasIndex("CounterId");
@@ -228,7 +268,7 @@ namespace PathWay_Solution.Migrations
                     b.HasIndex("EmployeeId")
                         .IsUnique();
 
-                    b.ToTable("AdCounterStaffdress");
+                    b.ToTable("CounterStaff");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Counters", b =>
@@ -302,8 +342,8 @@ namespace PathWay_Solution.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .HasMaxLength(100)

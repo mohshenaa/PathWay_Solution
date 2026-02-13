@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
@@ -10,23 +11,23 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize(Roles = "Admin")]
-    public class LocationController(PathwayDBContext db) : ControllerBase
+    public class LocationController(PathwayDBContext db) : ControllerBase   //done
     {
         [HttpGet]
         public async Task<IActionResult> GetAllLocations()
         {
             var location = await db.Location
-                .Include(a => a.RoutesFrom)
-                .Include(a => a.RoutesTo)
-                .Include(a => a.TripStops)
-                //.Select(a => new
-                //{
-                //    a.LocationId,
-                //    a.Name,
-                //    a.TripStops,
-                //    a.RoutesFrom,
-                //    a.RoutesTo
-                //})
+                //.Include(a => a.RoutesFrom)
+                //.Include(a => a.RoutesTo)
+                //.Include(a => a.TripStops)
+                .Select(a => new
+                {
+                    a.LocationId,
+                    a.Name,
+                    RoutesFromCount = a.RoutesFrom.Count,
+                    RoutesToCount = a.RoutesTo.Count,
+                    TripStopsCount = a.TripStops.Count
+                })
                 .ToListAsync();
             return Ok(location);
         }
@@ -34,14 +35,14 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetLocationById(int? id)
         {
-            //if (id == null) return BadRequest("Id is required!");
+            if (id == null) return BadRequest("Id is required!");
 
-            //var location = await db.Location
-            //    .Include(a => a.RoutesFrom)
-            //    .Include(a => a.RoutesTo)
-            //    .Include(a => a.TripStops).FirstOrDefaultAsync(a => a.LocationId == id);
+            var location = await db.Location
+                .Include(a => a.RoutesFrom)
+                .Include(a => a.RoutesTo)
+                .Include(a => a.TripStops).FirstOrDefaultAsync(a => a.LocationId == id);
 
-            var location = await db.Location.FindAsync(id);
+         //   var location = await db.Location.FindAsync(id);
 
             if (location == null) return BadRequest($"Location Id {id} is not found!");
 
@@ -118,9 +119,14 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             {
                 return NotFound();
             }
+
+            if (location.RoutesFrom!.Any() || location.RoutesTo!.Any()|| location.TripStops!.Any())
+                return BadRequest("Cannot delete location because of related data.");
+
             db.Location.Remove(location);
             await db.SaveChangesAsync();
             return Ok($"Location id {id} has been deleted");
         }
+       
     }
 }

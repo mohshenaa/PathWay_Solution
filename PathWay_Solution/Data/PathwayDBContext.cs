@@ -13,11 +13,12 @@ namespace PathWay_Solution.Data
         {
         }
 
+        public DbSet<Admin> Admin { get; set; }
         public DbSet<Address> Address { get; set; }
         public DbSet<Booking> Booking { get; set; }
         public DbSet<CancellationRefund> CancellationRefund { get; set; }
         public DbSet<Counters> Counters { get; set; }
-        public DbSet<CounterStaff> AdCounterStaffdress { get; set; }
+        public DbSet<CounterStaff> CounterStaff { get; set; }
         public DbSet<Driver> Driver { get; set; }
         public DbSet<Employee> Employee { get; set; }
         public DbSet<Expense> Expense { get; set; }
@@ -126,6 +127,11 @@ namespace PathWay_Solution.Data
             //employee
             builder.Entity<Employee>(entity =>
             {
+                entity.HasOne(e => e.AppUser)
+                .WithOne()
+                .HasForeignKey<Employee>(e => e.AppUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
                 entity.HasMany(a => a.Salaries)
                 .WithOne(a => a.Employee)
                 .HasForeignKey(a => a.EmployeeId)
@@ -135,7 +141,7 @@ namespace PathWay_Solution.Data
             //driver
             builder.Entity<Driver>(entity =>
             {
-               
+
                 entity.HasOne(a => a.Employee)
                 .WithOne()
                 .HasForeignKey<Driver>(a => a.EmployeeId)
@@ -151,7 +157,7 @@ namespace PathWay_Solution.Data
             //helper
             builder.Entity<Helper>(entity =>
             {
-               
+
                 entity.HasOne(a => a.Employee)
                 .WithOne()
                 .HasForeignKey<Helper>(a => a.EmployeeId)
@@ -181,7 +187,7 @@ namespace PathWay_Solution.Data
 
             //salary
             builder.Entity<Salary>(entity =>
-            {                
+            {
                 entity.HasOne(a => a.Employee)
                 .WithMany(a => a.Salaries)
                 .HasForeignKey(a => a.EmployeeId)
@@ -201,9 +207,9 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.HelperId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(a=>a.Routes)
-                .WithMany(a=>a.Trips)
-                .HasForeignKey(a=>a.RouteId)
+                entity.HasOne(a => a.Routes)
+                .WithMany(a => a.Trips)
+                .HasForeignKey(a => a.RouteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasMany(a => a.Seats)
@@ -219,11 +225,11 @@ namespace PathWay_Solution.Data
               .WithMany(t => t.TripStops)
               .HasForeignKey(e => e.TripId)
               .OnDelete(DeleteBehavior.Restrict);
-             
-               entity.HasOne(a =>a.Location)
-              .WithMany(a=>a.TripStops)
-              .HasForeignKey(a => a.LocationId)
-              .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(a => a.Location)
+               .WithMany(a => a.TripStops)
+               .HasForeignKey(a => a.LocationId)
+               .OnDelete(DeleteBehavior.Restrict);
             });
 
             //seat
@@ -272,8 +278,8 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(a => a.Vehicle)
-                .WithMany(a=>a.VehicleMaintenances)
-                .HasForeignKey (a=>a.VehicleId)
+                .WithMany(a => a.VehicleMaintenances)
+                .HasForeignKey(a => a.VehicleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             });
@@ -288,7 +294,7 @@ namespace PathWay_Solution.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(a => a.ToLocation)
-                .WithMany(a=>a.RoutesTo)
+                .WithMany(a => a.RoutesTo)
                 .HasForeignKey(a => a.ToLocationId)
                 .OnDelete(DeleteBehavior.Restrict);
             });

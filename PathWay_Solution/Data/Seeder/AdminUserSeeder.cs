@@ -5,11 +5,21 @@ namespace PathWay_Solution.Data.Seeder
 {
     public class AdminUserSeeder
     {
-        public static async Task SeedAsync(UserManager<AppUser> usermanager)
+        public static async Task SeedAsync(UserManager<AppUser> userManager,
+    RoleManager<AppRole> roleManager, PathwayDBContext db)
         {
+            var roleName = "Admin";
             var adminEmail = "admin@gmail.com";
             var adminPass = "Admin@123";
-            var adminUser = await usermanager.FindByEmailAsync(adminEmail);
+           
+            //check role exists
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(
+                    new AppRole { Name = roleName });
+            }
+
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)
             {
@@ -24,17 +34,18 @@ namespace PathWay_Solution.Data.Seeder
                     CreatedOn= DateTime.UtcNow
                 };
 
-                var result= await usermanager.CreateAsync(adminUser,adminPass);
+                var result= await userManager.CreateAsync(adminUser,adminPass);
 
                 if (!result.Succeeded)
                 {
                     throw new Exception("Admin user creation failed");
                 }
+                await userManager.AddToRoleAsync(adminUser, roleName);
             }
 
-            if (!await usermanager.IsInRoleAsync(adminUser,"Admin"))
+            if (!await userManager.IsInRoleAsync(adminUser,"Admin"))
             {
-                await usermanager.AddToRoleAsync(adminUser, "Admin");
+                await userManager.AddToRoleAsync(adminUser, "Admin");
             }
 
         }

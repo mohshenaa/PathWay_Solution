@@ -141,10 +141,14 @@ using (var scope = app.Services.CreateScope())
 {
     var rolemanager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
     var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    var db = scope.ServiceProvider.GetRequiredService<PathwayDBContext>();
 
     await RoleSeeder.SeedAsync(rolemanager);
-    await AdminUserSeeder.SeedAsync(usermanager);
-    await CounterStaffSeeder.SeedAsync(usermanager);
+    await LocationSeeder.SeedAsync(db);
+    await RouteSeeder.SeedAsync(db);
+    await CounterSeeder.SeedAsync(db);
+    await AdminUserSeeder.SeedAsync(usermanager, rolemanager, db);
+    await CounterStaffSeeder.SeedAsync(usermanager,rolemanager,db); //need to maintain sequence
 }
 
 // Configure the HTTP request pipeline.
