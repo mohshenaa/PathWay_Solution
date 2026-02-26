@@ -18,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(opt=>
 {
     opt.JsonSerializerOptions.ReferenceHandler= System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    opt.JsonSerializerOptions.Converters.Add(
+            new System.Text.Json.Serialization.JsonStringEnumConverter());  //add json enum string conversion
 });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 //builder.Services.AddOpenApi();
@@ -83,6 +85,9 @@ builder.Services.AddAuthorization(opt =>
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.EnableAnnotations();
+    options.UseInlineDefinitionsForEnums();  //configure in swagger enum as string
+    options.SchemaGeneratorOptions.UseAllOfToExtendReferenceSchemas = false;
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -146,6 +151,7 @@ using (var scope = app.Services.CreateScope())
     await RoleSeeder.SeedAsync(rolemanager);
     await LocationSeeder.SeedAsync(db);
     await RouteSeeder.SeedAsync(db);
+    await TripScheduleSeeder.SeedAsync(db);
     await CounterSeeder.SeedAsync(db);
     await AdminUserSeeder.SeedAsync(usermanager, rolemanager, db);
     await CounterStaffSeeder.SeedAsync(usermanager,rolemanager,db); //need to maintain sequence

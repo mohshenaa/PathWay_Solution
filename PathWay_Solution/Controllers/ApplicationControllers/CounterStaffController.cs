@@ -20,6 +20,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
                  {
                      d.CounterStaffId,
                      d.EmployeeId,
+                     d.CounterId,
                      d.Employee.FirstName,
                      d.Employee.LastName,
                      d.Employee.PhoneNumber,

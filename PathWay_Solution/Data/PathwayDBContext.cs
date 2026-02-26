@@ -63,6 +63,12 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.VehicleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasIndex(v => v.VehicleNumber)
+               .IsUnique();
+
+                entity.Property(v => v.Status)
+               .HasConversion<string>();
+
                 entity.HasDiscriminator<string>("VehicleType")
                .HasValue<Bus>("Bus")
                .HasValue<MiniBus>("MiniBus")
@@ -71,58 +77,65 @@ namespace PathWay_Solution.Data
             });
 
             //seed for bus
-            builder.Entity<Bus>().HasData(
-    new Bus
-    {
-        VehicleId = 1,
-        VehicleNumber = "DHA-BUS-101",
-        Capacity = 50,
-        Doors = 2,
-        HasAC = true,
-        StandingCapacity = 20,
-        ImageUrl = "/images/vehicles/bus1.png",
-        Status = "Available"
-    }
-);
+            builder.Entity<Bus>().HasData(                
+                 new
+                 {
+                     VehicleId = 1,
+                     VehicleNumber = "DHA-BUS-101",
+                     Capacity = 50,
+                     Doors = 2,
+                     HasAC = true,
+                     StandingCapacity = 20,
+                     ImageUrl = "/images/vehicles/bus1.png",
+                     Status = VehicleStatus.Maintenance,
+                     VehicleType = "Bus"
+                 }
+             );
             //seed for mini bus
             builder.Entity<MiniBus>().HasData(
-    new MiniBus
-    {
-        VehicleId = 2,
-        VehicleNumber = "DHA-MINI-201",
-        Capacity = 30,
-        Doors = 2,
-        HasAC = true,
-        ImageUrl = "/images/vehicles/minibus1.png",
-        Status = "OnTrip"
-    }
-);
+                 new
+                 {
+                     VehicleId = 2,
+                     VehicleNumber = "DHA-MINI-201",
+                     Capacity = 30,
+                     Doors = 2,
+                     HasAC = true,
+                     ImageUrl = "/images/vehicles/minibus1.png",
+                     StandingCapacity = 10,
+                     Status = VehicleStatus.Available,
+                     VehicleType = "MiniBus"
+                 }
+             );
             //seed for car
             builder.Entity<Car>().HasData(
-    new Car
-    {
-        VehicleId = 3,
-        VehicleNumber = "DHA-CAR-301",
-        Capacity = 5,
-        Doors = 4,
-        CarCategory = "Sedan",
-        ImageUrl = "/images/vehicles/car1.png",
-        Status = "Available"
-    }
-);
+                 new
+                 {
+                     VehicleId = 3,
+                     VehicleNumber = "DHA-CAR-301",
+                     Capacity = 5,
+                     Doors = 4,
+                     HasAC = true,
+                     CarCategory = "Sedan",
+                     ImageUrl = "/images/vehicles/car1.png",
+                     Status = VehicleStatus.Available,
+                     VehicleType = "Car"
+                 }
+             );
             //seed for micro
             builder.Entity<Micro>().HasData(
-    new Micro
-    {
-        VehicleId = 4,
-        VehicleNumber = "DHA-MICRO-401",
-        Capacity = 8,
-        Doors = 4,
-        MicroCategory = "Luxury",
-        ImageUrl = "/images/vehicles/micro1.png",
-        Status = "Maintenance"
-    }
-);
+                 new 
+                 {
+                     VehicleId = 4,
+                     VehicleNumber = "DHA-MICRO-401",
+                     Capacity = 8,
+                     Doors = 4,
+                     HasAC = true,
+                     MicroCategory = "Luxury",
+                     ImageUrl = "/images/vehicles/micro1.png",
+                     Status = VehicleStatus.Available,
+                     VehicleType = "Micro"
+                 }
+             );
 
             //employee
             builder.Entity<Employee>(entity =>
@@ -299,6 +312,13 @@ namespace PathWay_Solution.Data
                 .OnDelete(DeleteBehavior.Restrict);
             });
 
+            //;ocation
+            builder.Entity<Location>(entity =>
+            {
+                entity.HasIndex(a => a.Name)
+                .IsUnique();
+            });
+
             //review
             builder.Entity<ReviewRating>(entity =>
             {
@@ -320,6 +340,8 @@ namespace PathWay_Solution.Data
                 .WithMany()
                 .HasForeignKey(a => a.AppUserId);
             });
+
+
         }
 
     }

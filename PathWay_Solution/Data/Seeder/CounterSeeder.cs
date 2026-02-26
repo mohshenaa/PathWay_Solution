@@ -20,8 +20,8 @@ namespace PathWay_Solution.Data.Seeder
                 {
                     RouteId = route.RouteId,
                     CounterName = "Main Counter",
-                    Address = "Head Office",
-                    ContactNumber = "01700000000"
+                    Address = "Head Office- Chattogram",
+                    ContactNumber = "01883331808"
                 };
                 db.Counters.Add(counter);
                 await db.SaveChangesAsync();

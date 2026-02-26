@@ -325,6 +325,41 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("Driver");
                 });
 
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.TripSchedule", b =>
+                {
+                    b.Property<int>("TripScheduleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TripScheduleId"));
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FrequencyHours")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RouteId")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("VehicleType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TripScheduleId");
+
+                    b.HasIndex("RouteId");
+
+                    b.ToTable("TripSchedule");
+                });
+
             modelBuilder.Entity("PathWay_Solution.Models.Employee", b =>
                 {
                     b.Property<int>("EmployeeId")
@@ -614,6 +649,9 @@ namespace PathWay_Solution.Migrations
 
                     b.HasKey("LocationId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Location");
                 });
 
@@ -891,44 +929,6 @@ namespace PathWay_Solution.Migrations
                     b.ToTable("Trip");
                 });
 
-            modelBuilder.Entity("PathWay_Solution.Models.TripSchedule", b =>
-                {
-                    b.Property<int>("TripScheduleId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TripScheduleId"));
-
-                    b.Property<string>("Direction")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FrequencyHours")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RouteId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoutesRouteId")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
-
-                    b.Property<string>("VehicleType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TripScheduleId");
-
-                    b.HasIndex("RoutesRouteId");
-
-                    b.ToTable("TripSchedule");
-                });
-
             modelBuilder.Entity("PathWay_Solution.Models.TripStop", b =>
                 {
                     b.Property<int>("TripStopId")
@@ -980,11 +980,15 @@ namespace PathWay_Solution.Migrations
                     b.Property<int>("Doors")
                         .HasColumnType("int");
 
+                    b.Property<bool>("HasAC")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VehicleNumber")
@@ -998,6 +1002,9 @@ namespace PathWay_Solution.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.HasKey("VehicleId");
+
+                    b.HasIndex("VehicleNumber")
+                        .IsUnique();
 
                     b.ToTable("Vehicle");
 
@@ -1041,16 +1048,13 @@ namespace PathWay_Solution.Migrations
                 {
                     b.HasBaseType("PathWay_Solution.Models.Vehicle");
 
-                    b.Property<bool>("HasAC")
-                        .HasColumnType("bit");
-
                     b.Property<int>("StandingCapacity")
                         .HasColumnType("int");
 
                     b.ToTable("Vehicle", t =>
                         {
-                            t.Property("HasAC")
-                                .HasColumnName("Bus_HasAC");
+                            t.Property("StandingCapacity")
+                                .HasColumnName("Bus_StandingCapacity");
                         });
 
                     b.HasDiscriminator().HasValue("Bus");
@@ -1061,10 +1065,11 @@ namespace PathWay_Solution.Migrations
                             VehicleId = 1,
                             Capacity = 50,
                             Doors = 2,
-                            ImageUrl = "/images/vehicles/bus1.png",
-                            Status = "Available",
-                            VehicleNumber = "DHA-BUS-101",
                             HasAC = true,
+                            ImageUrl = "/images/vehicles/bus1.png",
+                            Status = "Maintenance",
+                            VehicleNumber = "DHA-BUS-101",
+                            VehicleType = "Bus",
                             StandingCapacity = 20
                         });
                 });
@@ -1085,9 +1090,11 @@ namespace PathWay_Solution.Migrations
                             VehicleId = 3,
                             Capacity = 5,
                             Doors = 4,
+                            HasAC = true,
                             ImageUrl = "/images/vehicles/car1.png",
                             Status = "Available",
                             VehicleNumber = "DHA-CAR-301",
+                            VehicleType = "Car",
                             CarCategory = "Sedan"
                         });
                 });
@@ -1108,9 +1115,11 @@ namespace PathWay_Solution.Migrations
                             VehicleId = 4,
                             Capacity = 8,
                             Doors = 4,
+                            HasAC = true,
                             ImageUrl = "/images/vehicles/micro1.png",
-                            Status = "Maintenance",
+                            Status = "Available",
                             VehicleNumber = "DHA-MICRO-401",
+                            VehicleType = "Micro",
                             MicroCategory = "Luxury"
                         });
                 });
@@ -1119,8 +1128,8 @@ namespace PathWay_Solution.Migrations
                 {
                     b.HasBaseType("PathWay_Solution.Models.Vehicle");
 
-                    b.Property<bool>("HasAC")
-                        .HasColumnType("bit");
+                    b.Property<int>("StandingCapacity")
+                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("MiniBus");
 
@@ -1130,10 +1139,12 @@ namespace PathWay_Solution.Migrations
                             VehicleId = 2,
                             Capacity = 30,
                             Doors = 2,
+                            HasAC = true,
                             ImageUrl = "/images/vehicles/minibus1.png",
-                            Status = "OnTrip",
+                            Status = "Available",
                             VehicleNumber = "DHA-MINI-201",
-                            HasAC = true
+                            VehicleType = "MiniBus",
+                            StandingCapacity = 10
                         });
                 });
 
@@ -1263,6 +1274,17 @@ namespace PathWay_Solution.Migrations
                         .IsRequired();
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.TripSchedule", b =>
+                {
+                    b.HasOne("PathWay_Solution.Models.Routes", "Route")
+                        .WithMany("TripSchedules")
+                        .HasForeignKey("RouteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.Employee", b =>
@@ -1424,7 +1446,7 @@ namespace PathWay_Solution.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PathWay_Solution.Models.TripSchedule", "TripSchedule")
+                    b.HasOne("PathWay_Solution.Models.ApplicationModels.TripSchedule", "TripSchedule")
                         .WithMany("Trips")
                         .HasForeignKey("TripScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1445,17 +1467,6 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("TripSchedule");
 
                     b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.TripSchedule", b =>
-                {
-                    b.HasOne("PathWay_Solution.Models.Routes", "Routes")
-                        .WithMany("TripSchedules")
-                        .HasForeignKey("RoutesRouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Routes");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.TripStop", b =>
@@ -1509,6 +1520,11 @@ namespace PathWay_Solution.Migrations
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.Driver", b =>
+                {
+                    b.Navigation("Trips");
+                });
+
+            modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.TripSchedule", b =>
                 {
                     b.Navigation("Trips");
                 });
@@ -1569,11 +1585,6 @@ namespace PathWay_Solution.Migrations
                     b.Navigation("Seats");
 
                     b.Navigation("TripStops");
-                });
-
-            modelBuilder.Entity("PathWay_Solution.Models.TripSchedule", b =>
-                {
-                    b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("PathWay_Solution.Models.Vehicle", b =>

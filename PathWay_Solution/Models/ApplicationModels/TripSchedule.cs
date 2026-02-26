@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PathWay_Solution.Models
+namespace PathWay_Solution.Models.ApplicationModels
 {
     public class TripSchedule
     {
@@ -10,9 +10,9 @@ namespace PathWay_Solution.Models
         public string VehicleType { get; set; } = "Bus";
         public TimeSpan StartTime { get; set; }
         public int FrequencyHours { get; set; } = 2;
-        public string Direction { get; set; } = null!;  //dhaka to ctg 
+        public string Direction { get; set; } = null!; //dhaka to ctg
         public bool IsActive { get; set; } = true;
-        public Routes Routes { get; set; } = null!;
+        public Routes Route { get; set; } = null!;
         public ICollection<Trip>? Trips { get; set; }
     }
 }

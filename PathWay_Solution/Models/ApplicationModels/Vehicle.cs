@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace PathWay_Solution.Models
 {
@@ -11,19 +12,30 @@ namespace PathWay_Solution.Models
         public string VehicleNumber { get; set; } = null!;
         public int Capacity { get; set; }
         public int Doors { get; set; }
+        public bool HasAC { get; set; }
         public string ImageUrl { get; set; } = "";
-        public string? Status { get; set; } = "Available";
+
+        [SwaggerSchema(Nullable = false)]
+        public VehicleStatus Status { get; set; } = VehicleStatus.Available;
         public ICollection<Trip>? Trips { get; set; }
         public ICollection<VehicleMaintenance>? VehicleMaintenances { get; set; }
     }
+    public enum VehicleStatus
+    {
+        Available,
+        OnTrip,
+        Maintenance,
+        Inactive
+    }
     public class Bus : Vehicle
     {
-        public bool HasAC { get; set; }
+       // public bool HasAC { get; set; }
         public int StandingCapacity { get; set; }
     }
     public class MiniBus : Vehicle
     {
-        public bool HasAC { get; set; }
+        //  public bool HasAC { get; set; }
+        public int StandingCapacity { get; set; }
     }
     public class Car : Vehicle
     {

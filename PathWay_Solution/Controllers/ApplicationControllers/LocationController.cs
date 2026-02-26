@@ -17,9 +17,6 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         public async Task<IActionResult> GetAllLocations()
         {
             var location = await db.Location
-                //.Include(a => a.RoutesFrom)
-                //.Include(a => a.RoutesTo)
-                //.Include(a => a.TripStops)
                 .Select(a => new
                 {
                     a.LocationId,
@@ -114,18 +111,24 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLocation(int id)
         {
-            Location location = await db.Location.FindAsync(id);
+            var location = await db.Location
+         .Include(l => l.RoutesFrom)
+         .Include(l => l.RoutesTo)
+         .Include(l => l.TripStops)
+         .FirstOrDefaultAsync(l => l.LocationId == id);
+
             if (location == null)
             {
                 return NotFound();
             }
 
-            if (location.RoutesFrom!.Any() || location.RoutesTo!.Any()|| location.TripStops!.Any())
+            if (location.RoutesFrom.Any() || location.RoutesTo.Any()|| location.TripStops.Any())
                 return BadRequest("Cannot delete location because of related data.");
 
             db.Location.Remove(location);
             await db.SaveChangesAsync();
             return Ok($"Location id {id} has been deleted");
+
         }
        
     }
