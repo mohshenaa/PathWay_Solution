@@ -138,6 +138,7 @@ builder.Services
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IImageUpload,ImageUpload>();
+builder.Services.AddScoped<ITripService, TripService>();
 
 var app = builder.Build();
 

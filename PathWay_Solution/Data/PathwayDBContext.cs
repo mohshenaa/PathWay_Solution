@@ -220,14 +220,16 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.HelperId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(a => a.Routes)
+                entity.HasOne(a => a.Route)
                 .WithMany(a => a.Trips)
                 .HasForeignKey(a => a.RouteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(a => a.Seats)
+                entity.HasMany(a => a.Seat)
                 .WithOne(a => a.Trip)
                 .HasForeignKey(a => a.TripId);
+
+                entity.HasOne(a => a.TripSchedule);
             });
 
             //trip stop
@@ -235,7 +237,7 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(e => e.Trip)
-              .WithMany(t => t.TripStops)
+              .WithMany(t => t.TripStop)
               .HasForeignKey(e => e.TripId)
               .OnDelete(DeleteBehavior.Restrict);
 
@@ -250,7 +252,7 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(a => a.Trip)
-                .WithMany(a => a.Seats)
+                .WithMany(a => a.Seat)
                 .HasForeignKey(a => a.TripId);
             });
 
@@ -263,7 +265,7 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.PassengerId);
 
                 entity.HasOne(a => a.Trip)
-                .WithMany(a => a.Bookings)
+                .WithMany(a => a.Booking)
                 .HasForeignKey(a => a.TripId);
             });
 
@@ -328,7 +330,7 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.PassengerId);
 
                 entity.HasOne(a => a.Trip)
-                .WithMany(a => a.ReviewRatings)
+                .WithMany(a => a.ReviewRating)
                 .HasForeignKey(a => a.TripId);
             });
 
