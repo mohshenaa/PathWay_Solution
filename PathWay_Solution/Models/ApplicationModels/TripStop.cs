@@ -7,7 +7,7 @@ namespace PathWay_Solution.Models
         [Key]
         public int TripStopId { get; set; }
         public int RouteId { get; set; }
-       public int TripId { get; set; }
+        public int TripId { get; set; }
         public int LocationId { get; set; }
         public int StopOrder { get; set; }
         public int BreakDurationMinutes { get; set; }

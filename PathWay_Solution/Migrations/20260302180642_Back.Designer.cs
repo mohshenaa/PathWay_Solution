@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PathWay_Solution.Data;
 
@@ -11,9 +12,11 @@ using PathWay_Solution.Data;
 namespace PathWay_Solution.Migrations
 {
     [DbContext(typeof(PathwayDBContext))]
-    partial class PathwayDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260302180642_Back")]
+    partial class Back
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -898,17 +901,11 @@ namespace PathWay_Solution.Migrations
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CancelledTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DriverId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("HelperId")
                         .HasColumnType("int");
@@ -918,9 +915,6 @@ namespace PathWay_Solution.Migrations
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("TripScheduleId")
                         .HasColumnType("int");

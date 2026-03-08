@@ -21,6 +21,9 @@ namespace PathWay_Solution.Models
         public TripStatus TripStatus { get; set; }
         public Routes Route { get; set; } = null!;
         public TripSchedule TripSchedule { get; set; } = null!;
+        public DateTime? StartTime { get; set; }     
+        public DateTime? EndTime { get; set; }       
+        public DateTime? CancelledTime { get; set; }
         public Vehicle Vehicle { get; set; } = null!;
         public Driver Driver { get; set; } = null!;
         public Helper? Helper { get; set; }
@@ -36,7 +39,6 @@ namespace PathWay_Solution.Models
     }
     public enum TripStatus
     {
-        OnDemand,
         Scheduled,
         Running,
         Completed,

@@ -7,7 +7,6 @@ using PathWay_Solution.Data;
 using PathWay_Solution.Data.Seeder;
 using PathWay_Solution.Models.IdentityModels;
 using PathWay_Solution.Services;
-using System;
 using System.Security.Claims;
 using System.Text;
 
@@ -15,9 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddJsonOptions(opt=>
+builder.Services.AddControllers().AddJsonOptions(opt =>
 {
-    opt.JsonSerializerOptions.ReferenceHandler= System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     opt.JsonSerializerOptions.Converters.Add(
             new System.Text.Json.Serialization.JsonStringEnumConverter());  //add json enum string conversion
 });
@@ -39,8 +38,8 @@ builder.Services.AddAuthentication(opt =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
-        RoleClaimType = ClaimTypes.Role,    
-        NameClaimType = ClaimTypes.NameIdentifier 
+        RoleClaimType = ClaimTypes.Role,
+        NameClaimType = ClaimTypes.NameIdentifier
     };
 });
 
@@ -98,9 +97,9 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-    {   
-         [   new OpenApiSecuritySchemeReference("Bearer", document)] = []
-        
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+
     });
 });
 
@@ -137,7 +136,7 @@ builder.Services
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<IImageUpload,ImageUpload>();
+builder.Services.AddScoped<IImageUpload, ImageUpload>();
 builder.Services.AddScoped<ITripService, TripService>();
 
 var app = builder.Build();
@@ -155,7 +154,7 @@ using (var scope = app.Services.CreateScope())
     await TripScheduleSeeder.SeedAsync(db);
     await CounterSeeder.SeedAsync(db);
     await AdminUserSeeder.SeedAsync(usermanager, rolemanager, db);
-    await CounterStaffSeeder.SeedAsync(usermanager,rolemanager,db); //need to maintain sequence
+    await CounterStaffSeeder.SeedAsync(usermanager, rolemanager, db); //need to maintain sequence
 }
 
 // Configure the HTTP request pipeline.
