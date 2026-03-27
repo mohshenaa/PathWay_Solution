@@ -18,6 +18,7 @@ namespace PathWay_Solution.Models
         [SwaggerSchema(Nullable = false)]
         public VehicleStatus Status { get; set; } = VehicleStatus.Available;
         public ICollection<Trip>? Trips { get; set; }
+        public ICollection<Seat>? Seats { get; set; }
         public ICollection<VehicleMaintenance>? VehicleMaintenances { get; set; }
     }
     public enum VehicleStatus

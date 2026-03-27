@@ -22,6 +22,8 @@ namespace PathWay_Solution.Dto
         [Required]
         public DateTime DepartureTime { get; set; }
 
+        public bool IsExpress { get; set; }
+
         [Required]
         public DateTime ArrivalTime { get; set; }
 

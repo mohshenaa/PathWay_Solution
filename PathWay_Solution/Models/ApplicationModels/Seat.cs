@@ -7,17 +7,44 @@ namespace PathWay_Solution.Models
     {
         [Key]
         public int SeatId { get; set; }
-        public int TripId { get; set; }
 
-         public string SeatNumber { get; set; } = null!;
+        public int VehicleId { get; set; }
 
+        public string SeatNumber { get; set; } = null!;
         public string Row { get; set; } = null!;
         public int Column { get; set; }
+
         public bool IsWindow { get; set; }
         public bool IsAisle { get; set; }
 
+        public Vehicle Vehicle { get; set; } = null!;
+    }
+
+    public class BookingSeat
+    {
+        public int BookingSeatId { get; set; }
+
+        public int BookingId { get; set; }
+        public int TripSeatId { get; set; }
+
+        public Booking Booking { get; set; } = null!;
+        public TripSeat TripSeat { get; set; } = null!;
+    }
+    public class TripSeat
+    {
+        [Key]
+        public int TripSeatId { get; set; }
+
+        public int TripId { get; set; }
+        public int SeatId { get; set; }
+
         public bool IsBooked { get; set; } = false;
+
+
+        public bool IsLocked { get; set; } = false; //seat lock
+        public DateTime? LockedUntil { get; set; }
+
         public Trip Trip { get; set; } = null!;
-        public Booking? Booking { get; set; } // if passengers book any
+        public Seat Seat { get; set; } = null!;
     }
 }

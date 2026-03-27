@@ -8,8 +8,7 @@ namespace PathWay_Solution.Models
     {
         [Key]
         public int PassengerId { get; set; }
-        public Guid UserId { get; set; }
-
+        public Guid AppUserId { get; set; }
         [Required]
         public string Gender { get; set; } = default!;
         public AppUser AppUser { get; set; } = null!;

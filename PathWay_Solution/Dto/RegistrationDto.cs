@@ -28,6 +28,7 @@ namespace PathWay_Solution.Dto
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; } = default!;
 
+        public string Gender { get; set; } = default!;
 
         [Required]
         [DataType(DataType.Password)]

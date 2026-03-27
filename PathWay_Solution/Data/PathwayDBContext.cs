@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Models;
 using PathWay_Solution.Models.ApplicationModels;
 using PathWay_Solution.Models.IdentityModels;
-using System.Reflection.Emit;
 
 namespace PathWay_Solution.Data
 {
@@ -32,6 +31,9 @@ namespace PathWay_Solution.Data
         public DbSet<Routes> Routes { get; set; }
         public DbSet<Salary> Salary { get; set; }
         public DbSet<Seat> Seat { get; set; }
+      
+        public DbSet<BookingSeat> BookingSeat { get; set; }
+        public DbSet<TripSeat> TripSeat { get; set; }
         public DbSet<Trip> Trip { get; set; }
         public DbSet<TripSchedule> TripSchedule { get; set; }
         public DbSet<TripStop> TripStop { get; set; }
@@ -46,6 +48,8 @@ namespace PathWay_Solution.Data
             ////to rename table name
             //builder.Entity<AppUser>().ToTable("users");
 
+            builder.Entity<TripSeat>();
+            builder.Entity<BookingSeat>();
 
             //address
             builder.Entity<Address>(entity =>
@@ -77,7 +81,7 @@ namespace PathWay_Solution.Data
             });
 
             //seed for bus
-            builder.Entity<Bus>().HasData(                
+            builder.Entity<Bus>().HasData(
                  new
                  {
                      VehicleId = 1,
@@ -87,7 +91,7 @@ namespace PathWay_Solution.Data
                      HasAC = true,
                      StandingCapacity = 20,
                      ImageUrl = "/images/vehicles/bus1.png",
-                     Status = VehicleStatus.Maintenance,
+                     Status = VehicleStatus.Available,
                      VehicleType = "Bus"
                  }
              );
@@ -123,7 +127,7 @@ namespace PathWay_Solution.Data
              );
             //seed for micro
             builder.Entity<Micro>().HasData(
-                 new 
+                 new
                  {
                      VehicleId = 4,
                      VehicleNumber = "DHA-MICRO-401",
@@ -225,7 +229,7 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.RouteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(a => a.Seat)
+                entity.HasMany(a => a.TripSeat)
                 .WithOne(a => a.Trip)
                 .HasForeignKey(a => a.TripId);
 
@@ -237,7 +241,7 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(e => e.Trip)
-              .WithMany(t => t.TripStop)
+              .WithMany(t => t.TripStops)
               .HasForeignKey(e => e.TripId)
               .OnDelete(DeleteBehavior.Restrict);
 
@@ -251,9 +255,10 @@ namespace PathWay_Solution.Data
             builder.Entity<Seat>(entity =>
             {
 
-                entity.HasOne(a => a.Trip)
-                .WithMany(a => a.Seat)
-                .HasForeignKey(a => a.TripId);
+                entity.HasOne(s => s.Vehicle)
+    .WithMany(v => v.Seats)
+    .HasForeignKey(s => s.VehicleId)
+    .OnDelete(DeleteBehavior.Restrict);
             });
 
             //booking
@@ -265,8 +270,9 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.PassengerId);
 
                 entity.HasOne(a => a.Trip)
-                .WithMany(a => a.Booking)
-                .HasForeignKey(a => a.TripId);
+                .WithMany(a => a.Bookings)
+                .HasForeignKey(a => a.TripId)
+                 .OnDelete(DeleteBehavior.Restrict);
             });
 
             //payment
@@ -274,8 +280,8 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(a => a.Booking)
-                .WithOne(a => a.Payment)
-                .HasForeignKey<Payment>(a => a.BookingId);
+                .WithMany(a => a.Payments)
+                .HasForeignKey(a => a.BookingId);
             });
 
             //Cancellation Refund
@@ -297,6 +303,37 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.VehicleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            });
+
+            //tripseat
+            builder.Entity<TripSeat>(entity =>
+            {
+
+                entity.HasOne(ts => ts.Trip)
+    .WithMany(t => t.TripSeat)
+    .HasForeignKey(ts => ts.TripId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(ts => ts.Seat)
+    .WithMany()
+    .HasForeignKey(ts => ts.SeatId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            });
+
+            //bookingseat
+            builder.Entity<BookingSeat>(entity =>
+            {
+
+                entity.HasOne(bs => bs.Booking)
+               .WithMany(b => b.BookingSeat)
+               .HasForeignKey(bs => bs.BookingId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(bs => bs.TripSeat)
+                .WithMany()
+                .HasForeignKey(bs => bs.TripSeatId)
+                .OnDelete(DeleteBehavior.Restrict);
             });
 
             //routes

@@ -25,12 +25,13 @@ namespace PathWay_Solution.Models
         public DateTime? EndTime { get; set; }       
         public DateTime? CancelledTime { get; set; }
         public Vehicle Vehicle { get; set; } = null!;
+        public bool IsExpress { get; set; }
         public Driver Driver { get; set; } = null!;
         public Helper? Helper { get; set; }
-        public ICollection<Seat>? Seat { get; set; }
-        public ICollection<TripStop>? TripStop { get; set; }
+        public ICollection<TripSeat>? TripSeat { get; set; }
+        public ICollection<TripStop>? TripStops { get; set; }
         public ICollection<ReviewRating>? ReviewRating { get; set; }
-        public ICollection<Booking>? Booking { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 
     public enum TripType

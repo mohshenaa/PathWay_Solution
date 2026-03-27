@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
+using PathWay_Solution.Models;
 using PathWay_Solution.Models.IdentityModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,14 +19,16 @@ namespace PathWay_Solution.Controllers.IdentityControllers
         public readonly SignInManager<AppUser> _signInManager;
         public readonly RoleManager<AppRole> _roleManager;
         public readonly IConfiguration _configuration;
+        public readonly PathwayDBContext _db;
 
         public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-        RoleManager<AppRole> roleManager, IConfiguration configuration)
+        RoleManager<AppRole> roleManager, IConfiguration configuration,PathwayDBContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _db = db;
         }
 
         [HttpPost("register")]
@@ -51,7 +55,21 @@ namespace PathWay_Solution.Controllers.IdentityControllers
 
             //Default role
             await _userManager.AddToRoleAsync(user, "Passenger");
-            return Ok("User register successfully!");
+            var passenger = new Passenger
+            {
+                AppUserId = user.Id,
+                Gender = dto.Gender
+            };
+
+            _db.Passenger.Add(passenger);
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "User registered successfully",
+                UserId = user.Id,
+                PassengerId = passenger.PassengerId
+            });
         }
 
 
