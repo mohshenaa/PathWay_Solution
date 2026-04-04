@@ -5,8 +5,8 @@ namespace PathWay_Solution.Dto
 {
     public class TripCreateDto
     {
-        [Required]
-        public int RouteId { get; set; }
+     
+     //   public int RouteId { get; set; }
 
         [Required]
         public int TripScheduleId { get; set; }
@@ -32,7 +32,7 @@ namespace PathWay_Solution.Dto
 
     public class TripUpdateDto
     {
-        public int RouteId { get; set; }
+       // public int RouteId { get; set; }
         public int TripScheduleId { get; set; }
         public int VehicleId { get; set; }
         public int DriverId { get; set; }
@@ -51,6 +51,7 @@ namespace PathWay_Solution.Dto
         public int RouteId { get; set; }
         public int VehicleId { get; set; }
         public int DriverId { get; set; }
+        public int TripScheduleId { get; set; }
 
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }

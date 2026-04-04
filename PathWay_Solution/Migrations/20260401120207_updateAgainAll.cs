@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PathWay_Solution.Migrations
 {
     /// <inheritdoc />
-    public partial class Start : Migration
+    public partial class updateAgainAll : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -453,9 +453,14 @@ namespace PathWay_Solution.Migrations
                     SalaryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    SalaryMonth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaidDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Month = table.Column<int>(type: "int", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    BasicAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Bonus = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Deduction = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    NetAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -515,6 +520,34 @@ namespace PathWay_Solution.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TripStop",
+                columns: table => new
+                {
+                    TripStopId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RouteId = table.Column<int>(type: "int", nullable: false),
+                    LocationId = table.Column<int>(type: "int", nullable: false),
+                    StopOrder = table.Column<int>(type: "int", nullable: false),
+                    BreakDurationMinutes = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TripStop", x => x.TripStopId);
+                    table.ForeignKey(
+                        name: "FK_TripStop_Location_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Location",
+                        principalColumn: "LocationId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TripStop_Routes_RouteId",
+                        column: x => x.RouteId,
+                        principalTable: "Routes",
+                        principalColumn: "RouteId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CounterStaff",
                 columns: table => new
                 {
@@ -547,12 +580,10 @@ namespace PathWay_Solution.Migrations
                 {
                     TripId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RouteId = table.Column<int>(type: "int", nullable: false),
                     TripScheduleId = table.Column<int>(type: "int", nullable: false),
                     VehicleId = table.Column<int>(type: "int", nullable: false),
                     DriverId = table.Column<int>(type: "int", nullable: false),
                     HelperId = table.Column<int>(type: "int", nullable: true),
-                    ReviewRatingId = table.Column<int>(type: "int", nullable: true),
                     DepartureTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TripType = table.Column<int>(type: "int", nullable: false),
@@ -560,7 +591,8 @@ namespace PathWay_Solution.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CancelledTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsExpress = table.Column<bool>(type: "bit", nullable: false)
+                    IsExpress = table.Column<bool>(type: "bit", nullable: false),
+                    RoutesRouteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -578,11 +610,10 @@ namespace PathWay_Solution.Migrations
                         principalColumn: "HelperId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Trip_Routes_RouteId",
-                        column: x => x.RouteId,
+                        name: "FK_Trip_Routes_RoutesRouteId",
+                        column: x => x.RoutesRouteId,
                         principalTable: "Routes",
-                        principalColumn: "RouteId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "RouteId");
                     table.ForeignKey(
                         name: "FK_Trip_TripSchedule_TripScheduleId",
                         column: x => x.TripScheduleId,
@@ -635,11 +666,14 @@ namespace PathWay_Solution.Migrations
                 {
                     ExpenseId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExpenseType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpenseType = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExpenseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     VehicleId = table.Column<int>(type: "int", nullable: true),
-                    TripId = table.Column<int>(type: "int", nullable: true)
+                    TripId = table.Column<int>(type: "int", nullable: true),
+                    SalaryId = table.Column<int>(type: "int", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -715,40 +749,6 @@ namespace PathWay_Solution.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TripStop",
-                columns: table => new
-                {
-                    TripStopId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TripId = table.Column<int>(type: "int", nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: false),
-                    StopOrder = table.Column<int>(type: "int", nullable: false),
-                    BreakDurationMinutes = table.Column<int>(type: "int", nullable: false),
-                    RoutesRouteId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TripStop", x => x.TripStopId);
-                    table.ForeignKey(
-                        name: "FK_TripStop_Location_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Location",
-                        principalColumn: "LocationId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_TripStop_Routes_RoutesRouteId",
-                        column: x => x.RoutesRouteId,
-                        principalTable: "Routes",
-                        principalColumn: "RouteId");
-                    table.ForeignKey(
-                        name: "FK_TripStop_Trip_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trip",
-                        principalColumn: "TripId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CancellationRefund",
                 columns: table => new
                 {
@@ -757,7 +757,8 @@ namespace PathWay_Solution.Migrations
                     BookingId = table.Column<int>(type: "int", nullable: false),
                     RefundAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     RefundDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -823,7 +824,7 @@ namespace PathWay_Solution.Migrations
             migrationBuilder.InsertData(
                 table: "Vehicle",
                 columns: new[] { "VehicleId", "Capacity", "Doors", "HasAC", "ImageUrl", "Bus_StandingCapacity", "Status", "VehicleNumber", "VehicleType" },
-                values: new object[] { 1, 50, 2, true, "/images/vehicles/bus1.png", 20, "Maintenance", "DHA-BUS-101", "Bus" });
+                values: new object[] { 1, 50, 2, true, "/images/vehicles/bus1.png", 20, "Available", "DHA-BUS-101", "Bus" });
 
             migrationBuilder.InsertData(
                 table: "Vehicle",
@@ -974,7 +975,8 @@ namespace PathWay_Solution.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Payment_BookingId",
                 table: "Payment",
-                column: "BookingId");
+                column: "BookingId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReviewRating_PassengerId",
@@ -997,9 +999,10 @@ namespace PathWay_Solution.Migrations
                 column: "ToLocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Salary_EmployeeId",
+                name: "IX_Salary_EmployeeId_Month_Year",
                 table: "Salary",
-                column: "EmployeeId");
+                columns: new[] { "EmployeeId", "Month", "Year" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Seat_VehicleId",
@@ -1017,9 +1020,9 @@ namespace PathWay_Solution.Migrations
                 column: "HelperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Trip_RouteId",
+                name: "IX_Trip_RoutesRouteId",
                 table: "Trip",
-                column: "RouteId");
+                column: "RoutesRouteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trip_TripScheduleId",
@@ -1052,14 +1055,9 @@ namespace PathWay_Solution.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TripStop_RoutesRouteId",
+                name: "IX_TripStop_RouteId",
                 table: "TripStop",
-                column: "RoutesRouteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TripStop_TripId",
-                table: "TripStop",
-                column: "TripId");
+                column: "RouteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicle_VehicleNumber",

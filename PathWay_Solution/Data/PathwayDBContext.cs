@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Models;
 using PathWay_Solution.Models.ApplicationModels;
 using PathWay_Solution.Models.IdentityModels;
+using System.Reflection.Emit;
 
 namespace PathWay_Solution.Data
 {
@@ -31,7 +32,7 @@ namespace PathWay_Solution.Data
         public DbSet<Routes> Routes { get; set; }
         public DbSet<Salary> Salary { get; set; }
         public DbSet<Seat> Seat { get; set; }
-      
+
         public DbSet<BookingSeat> BookingSeat { get; set; }
         public DbSet<TripSeat> TripSeat { get; set; }
         public DbSet<Trip> Trip { get; set; }
@@ -209,7 +210,12 @@ namespace PathWay_Solution.Data
                 .WithMany(a => a.Salaries)
                 .HasForeignKey(a => a.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.HasIndex(s => new { s.EmployeeId, s.Month, s.Year })
+               .IsUnique();
             });
+
 
             //trip
             builder.Entity<Trip>(entity =>
@@ -224,25 +230,27 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.HelperId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(a => a.Route)
-                .WithMany(a => a.Trips)
-                .HasForeignKey(a => a.RouteId)
-                .OnDelete(DeleteBehavior.Restrict);
+                //entity.HasOne(a => a.Route)
+                //.WithMany(a => a.Trips)
+                //.HasForeignKey(a => a.RouteId)
+                //.OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasMany(a => a.TripSeat)
                 .WithOne(a => a.Trip)
                 .HasForeignKey(a => a.TripId);
 
-                entity.HasOne(a => a.TripSchedule);
+                entity.HasOne(t => t.TripSchedule)
+                .WithMany(ts => ts.Trips)
+                .HasForeignKey(t => t.TripScheduleId);
             });
 
             //trip stop
             builder.Entity<TripStop>(entity =>
             {
 
-                entity.HasOne(e => e.Trip)
-              .WithMany(t => t.TripStops)
-              .HasForeignKey(e => e.TripId)
+                entity.HasOne(ts => ts.Route)
+               .WithMany(r => r.TripStops)
+               .HasForeignKey(ts => ts.RouteId)
               .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(a => a.Location)
@@ -280,11 +288,11 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(a => a.Booking)
-                .WithMany(a => a.Payments)
-                .HasForeignKey(a => a.BookingId);
+                .WithOne(a => a.Payment)
+                .HasForeignKey<Payment>(a => a.BookingId);
             });
 
-            //Cancellation Refund
+            //Cancellation and refund
             builder.Entity<CancellationRefund>(entity =>
             {
 
@@ -326,7 +334,7 @@ namespace PathWay_Solution.Data
             {
 
                 entity.HasOne(bs => bs.Booking)
-               .WithMany(b => b.BookingSeat)
+               .WithMany(b => b.BookingSeats)
                .HasForeignKey(bs => bs.BookingId)
                .OnDelete(DeleteBehavior.Restrict);
 
@@ -349,6 +357,7 @@ namespace PathWay_Solution.Data
                 .WithMany(a => a.RoutesTo)
                 .HasForeignKey(a => a.ToLocationId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             });
 
             //;ocation

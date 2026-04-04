@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PathWay_Solution.Data;
 
@@ -11,9 +12,11 @@ using PathWay_Solution.Data;
 namespace PathWay_Solution.Migrations
 {
     [DbContext(typeof(PathwayDBContext))]
-    partial class PathwayDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260401120207_updateAgainAll")]
+    partial class updateAgainAll
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -364,9 +367,6 @@ namespace PathWay_Solution.Migrations
 
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("PriceAtBooking")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("TripSeatId")
                         .HasColumnType("int");
@@ -835,9 +835,6 @@ namespace PathWay_Solution.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<decimal>("PricePerSeat")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ToLocationId")
                         .HasColumnType("int");

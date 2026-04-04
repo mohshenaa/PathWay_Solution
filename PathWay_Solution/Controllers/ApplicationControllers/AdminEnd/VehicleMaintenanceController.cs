@@ -5,7 +5,7 @@ using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
 using PathWay_Solution.Models;
 
-namespace PathWay_Solution.Controllers.ApplicationControllers
+namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
 {
     [Route("api/[controller]")]
     [ApiController]

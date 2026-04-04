@@ -2,47 +2,48 @@
 using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
-using PathWay_Solution.Models;
+using PathWay_Solution.Models.ApplicationModels;
 
-namespace PathWay_Solution.Controllers.ApplicationControllers
+namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
 {
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize(Roles = "Admin")]
-    public class HelperController(PathwayDBContext db) : ControllerBase   //done
+    public class DriverController(PathwayDBContext db) : ControllerBase   //done
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllHelper()
+        public async Task<IActionResult> GetAllDriver()
         {
-            var helper = await db.Helper
+            var driver = await db.Driver
                 .Include(a => a.Employee)
                  .Select(d => new
                  {
-                     d.HelperId,
+                     d.DriverId,
                      d.EmployeeId,
                      d.Employee.FirstName,
                      d.Employee.LastName,
                      d.Employee.PhoneNumber,
+                     d.LicenseNumber,
                      d.IsAvailable
                  })
                 .ToListAsync();
-            return Ok(helper);
+            return Ok(driver);
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetHelperById(int? id)
+        public async Task<IActionResult> GetDriverById(int? id)
         {
             if (id == null) return BadRequest("Id is required!");
 
-            var helper = await db.Helper
+            var driver = await db.Driver
                 .Include(a => a.Employee)
                 .Include(a => a.Trips)
                 .FirstOrDefaultAsync();
-            if (helper == null) return BadRequest($"Helper id {id} not found!");
-            return Ok(helper);
+            if (driver == null) return BadRequest($"Driver id {id} not found!");
+            return Ok(driver);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateHelper(HelperCreateDto dto)
+        public async Task<IActionResult> CreateDriver(DriverCreateDto dto)
         {
             var employee = await db.Employee.FirstOrDefaultAsync(a => a.EmployeeId == dto.EmployeeId && a.IsActive);
 
@@ -51,63 +52,66 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
                 return BadRequest("Employee not found");
             }
 
-            var alreadyAssigned = await db.Helper.AnyAsync(a => a.EmployeeId == dto.EmployeeId) ||
-                await db.Driver.AnyAsync(a => a.EmployeeId == dto.EmployeeId) ||
+            var alreadyAssigned = await db.Driver.AnyAsync(a => a.EmployeeId == dto.EmployeeId) ||
+                await db.Helper.AnyAsync(a => a.EmployeeId == dto.EmployeeId) ||
                 await db.CounterStaff.AnyAsync(a => a.EmployeeId == dto.EmployeeId);
 
 
             if (alreadyAssigned)
                 return BadRequest("Employee already assigned to another role");
 
-            var helper = new Helper
+            var driver = new Driver
             {
                 EmployeeId = dto.EmployeeId,
+                LicenseNumber = dto.LicenseNumber,
                 IsAvailable = true
             };
 
-            db.Helper.Add(helper);
+            db.Driver.Add(driver);
             await db.SaveChangesAsync();
 
-            return Ok("Helper assigned successfully");
+            return Ok("Driver assigned successfully");
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateHelper(int id, DriverUpdateDto dto)
+        public async Task<IActionResult> UpdateDriver(int id, DriverUpdateDto dto)
         {
-            var helper = await db.Helper.FindAsync(id);
-            if (helper == null) return BadRequest("Helper not found!");
+            var driver = await db.Driver.FindAsync(id);
+            if (driver == null) return BadRequest("Driver not found!");
 
-            helper.IsAvailable = dto.IsAvailable;
+            driver.LicenseNumber = dto.LicenseNumber;
+            driver.IsAvailable = dto.IsAvailable;
 
             await db.SaveChangesAsync();
-            return Ok("Helper updated successfully");
+            return Ok("Driver updated successfully");
         }
 
         [HttpPatch("{id}/availability")]
         public async Task<IActionResult> ChangeAvailability(int id, bool isAvailable)
         {
-            var helper = await db.Helper.FindAsync(id);
+            var driver = await db.Driver.FindAsync(id);
 
-            if (helper == null)
-                return NotFound("Helper not found");
+            if (driver == null)
+                return NotFound("Driver not found");
 
-            helper.IsAvailable = isAvailable;
+            driver.IsAvailable = isAvailable;
             await db.SaveChangesAsync();
 
-            return Ok("Helper availability updated");
+            return Ok("Driver availability updated");
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteHelper(int id)
+        public async Task<IActionResult> DeleteDriver(int id)
         {
-            Helper helper = await db.Helper.FindAsync(id);
-            if (helper == null)
+            Driver driver = await db.Driver.FindAsync(id);
+            if (driver == null)
             {
                 return NotFound();
             }
-            db.Helper.Remove(helper);
+            db.Driver.Remove(driver);
             await db.SaveChangesAsync();
-            return Ok($"Helper id {id} has been deleted");
+            return Ok($"Driver id {id} has been deleted");
         }
+
     }
 }

@@ -1,6 +1,5 @@
 ﻿using PathWay_Solution.Models.ApplicationModels;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Metrics;
 
 namespace PathWay_Solution.Models
 {
@@ -11,7 +10,8 @@ namespace PathWay_Solution.Models
         public int FromLocationId { get; set; }
         public int ToLocationId { get; set; }
         public double DistanceInKm { get; set; }
-        public bool IsActive { get; set; } = true;     
+        public bool IsActive { get; set; } = true;
+        public decimal PricePerSeat { get; set; }
         public Location FromLocation { get; set; } = null!;
         public Location ToLocation { get; set; } = null!;
         public ICollection<TripStop>? TripStops { get; set; }

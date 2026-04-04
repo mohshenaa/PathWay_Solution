@@ -8,7 +8,7 @@ namespace PathWay_Solution.Models
         public int TripStopId { get; set; }
 
         [Required]
-        public int TripId { get; set; }   // Link to specific trip
+        public int RouteId { get; set; }   // Link to specific trip
 
         [Required]
         public int LocationId { get; set; } // Stop location
@@ -18,7 +18,7 @@ namespace PathWay_Solution.Models
 
         public int BreakDurationMinutes { get; set; }  // Duration at stop
 
-        public Trip Trip { get; set; } = null!;
+        public Routes Route { get; set; }  = null!;
         public Location Location { get; set; } = null!;
     }
 }

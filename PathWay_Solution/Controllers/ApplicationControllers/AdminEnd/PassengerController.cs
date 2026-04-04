@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
-using PathWay_Solution.Models;
-using System.Security.Claims;
 
-namespace PathWay_Solution.Controllers.ApplicationControllers
+namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -26,7 +22,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
                                            .Select(p => new PassengerReadDto
                                            {
                                                PassengerId = p.PassengerId,
-                                          //     UserId = p.UserId,
+                                               //     UserId = p.UserId,
                                                Gender = p.Gender,
                                                UserName = p.AppUser.UserName,
                                                BookingCount = p.Bookings.Count,
@@ -49,7 +45,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
                                           .Select(p => new PassengerReadDto
                                           {
                                               PassengerId = p.PassengerId,
-                                             // UserId = p.UserId,
+                                              // UserId = p.UserId,
                                               Gender = p.Gender,
                                               UserName = p.AppUser.UserName,
                                               BookingCount = p.Bookings.Count,
@@ -63,6 +59,9 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             return Ok(passenger);
         }
 
+
+
+        //........................................................
         //// POST: api/Passenger
         //[HttpPost]
         //public async Task<ActionResult<PassengerReadDto>> CreatePassenger(PassengerCreateDto dto)
@@ -119,37 +118,5 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         //    return NoContent();
         //}
 
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<ActionResult<PassengerReadDto>> GetMyProfile()
-        {
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userIdString))
-                return Unauthorized();
-
-            if (!Guid.TryParse(userIdString, out var userId))
-                return BadRequest("Invalid user id");
-
-            var passenger = await db.Passenger
-                .Include(p => p.AppUser)
-                .Where(p => p.AppUserId == userId)
-                .Select(p => new PassengerReadDto
-                {
-                    PassengerId = p.PassengerId,
-                    AppUserId = p.AppUserId,
-                    Gender = p.Gender,
-                    UserName = p.AppUser.UserName,
-                    Email = p.AppUser.Email,
-                    BookingCount = p.Bookings.Count,
-                    ReviewCount = p.Reviews.Count
-                })
-                .FirstOrDefaultAsync();
-
-            if (passenger == null)
-                return NotFound("Passenger profile not found");
-
-            return Ok(passenger);
-        }
     }
 }

@@ -14,8 +14,7 @@ namespace PathWay_Solution.Dto
         public List<int>? TripSeatId { get; set; }
         public BookingSource BookingSource { get; set; } = BookingSource.Online;
 
-        [Required]
-        public decimal TotalAmount { get; set; }
+
     }
 
     public class BookingResponseDto

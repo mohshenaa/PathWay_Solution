@@ -2,7 +2,6 @@
 using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
 using PathWay_Solution.Models;
-using PathWay_Solution.Models.ApplicationModels;
 
 namespace PathWay_Solution.Services
 {
@@ -69,10 +68,17 @@ namespace PathWay_Solution.Services
         public async Task<TripResponseDto> CreateTripAsync(TripCreateDto dto)
         {
             // Validate existence of Route, Schedule, Vehicle, Driver, Helper
-            if (!await _db.Routes.AnyAsync(r => r.RouteId == dto.RouteId))
-                throw new Exception("Route not found");
+            //if (!await _db.Routes.AnyAsync(r => r.RouteId == dto.RouteId))
+            //    throw new Exception("Route not found");
 
-            if (!await _db.TripSchedule.AnyAsync(s => s.TripScheduleId == dto.TripScheduleId))
+            //if (!await _db.TripSchedule.AnyAsync(s => s.TripScheduleId == dto.TripScheduleId))
+            //    throw new Exception("Trip schedule not found");
+
+            var schedule = await _db.TripSchedule
+              .Include(s => s.Route)
+              .FirstOrDefaultAsync(s => s.TripScheduleId == dto.TripScheduleId);
+
+            if (schedule == null)
                 throw new Exception("Trip schedule not found");
 
             var vehicle = await _db.Vehicle.FindAsync(dto.VehicleId);
@@ -131,12 +137,12 @@ namespace PathWay_Solution.Services
 
             var trip = new Trip
             {
-                RouteId = dto.RouteId,
+                //  RouteId = dto.RouteId,
                 TripScheduleId = dto.TripScheduleId,
                 VehicleId = dto.VehicleId,
                 DriverId = dto.DriverId,
                 HelperId = dto.HelperId,
-                IsExpress=false,
+                IsExpress = false,
                 DepartureTime = dto.DepartureTime,
                 ArrivalTime = dto.ArrivalTime,
                 TripType = dto.TripType,
@@ -166,19 +172,19 @@ namespace PathWay_Solution.Services
             if (trip.TripType == TripType.Scheduled)
             {
                 var stops = new List<TripStop>();
-                if (trip.Route.FromLocationId != trip.Route.ToLocationId)
+                if (schedule.Route.FromLocationId != schedule.Route.ToLocationId)
                 {
                     stops.Add(new TripStop
                     {
-                        TripId = trip.TripId,
-                        LocationId = trip.Route.FromLocationId,
+                        RouteId = schedule.Route.RouteId,
+                        LocationId = schedule.Route.FromLocationId,
                         StopOrder = 1,
                         BreakDurationMinutes = 15
                     });
                     stops.Add(new TripStop
                     {
-                        TripId = trip.TripId,
-                        LocationId = trip.Route.ToLocationId,
+                        RouteId = schedule.Route.RouteId,
+                        LocationId = schedule.Route.ToLocationId,
                         StopOrder = 2,
                         BreakDurationMinutes = 15
                     });
@@ -190,7 +196,8 @@ namespace PathWay_Solution.Services
             return new TripResponseDto
             {
                 TripId = trip.TripId,
-                RouteId = trip.RouteId,
+                TripScheduleId = dto.TripScheduleId,
+                RouteId = trip.TripSchedule.RouteId,
                 VehicleId = trip.VehicleId,
                 DriverId = trip.DriverId,
                 DepartureTime = trip.DepartureTime,
@@ -203,22 +210,20 @@ namespace PathWay_Solution.Services
         public async Task<IEnumerable<Trip>> GetAllTripsAsync()
         {
             return await _db.Trip
-                .Include(t => t.Route)
+                .Include(t => t.TripSchedule.Route)
                 .Include(t => t.Vehicle)
                 .Include(t => t.Driver)
                 .Include(t => t.TripSchedule)
-                .Include(t => t.TripStops)
                 .ToListAsync();
         }
 
         public async Task<Trip?> GetTripByIdAsync(int id)
         {
             return await _db.Trip
-                .Include(t => t.Route)
+                .Include(t => t.TripSchedule.Route)
                 .Include(t => t.Vehicle)
                 .Include(t => t.Driver)
                 .Include(t => t.TripSchedule)
-                .Include(t => t.TripStops)
                 .Include(t => t.TripSeat)
     .ThenInclude(ts => ts.Seat)
                 .FirstOrDefaultAsync(t => t.TripId == id);
@@ -234,7 +239,7 @@ namespace PathWay_Solution.Services
                 throw new Exception("Cannot edit completed trip");
 
             // Update fields
-            trip.RouteId = dto.RouteId;
+            // trip.RouteId = dto.RouteId;
             trip.TripScheduleId = dto.TripScheduleId;
             trip.VehicleId = dto.VehicleId;
             trip.DriverId = dto.DriverId;
@@ -248,7 +253,8 @@ namespace PathWay_Solution.Services
             return new TripResponseDto
             {
                 TripId = trip.TripId,
-                RouteId = trip.RouteId,
+                TripScheduleId = dto.TripScheduleId,
+                RouteId = trip.TripSchedule.RouteId,
                 VehicleId = trip.VehicleId,
                 DriverId = trip.DriverId,
                 DepartureTime = trip.DepartureTime,
@@ -266,10 +272,6 @@ namespace PathWay_Solution.Services
             //// Remove seats
             //var seats = _db.Seat.Where(s => s.TripSeatId == id);
             //_db.Seat.RemoveRange(seats);
-
-            // Remove stops
-            var stops = _db.TripStop.Where(s => s.TripId == id);
-            _db.TripStop.RemoveRange(stops);
 
             _db.Trip.Remove(trip);
             await _db.SaveChangesAsync();

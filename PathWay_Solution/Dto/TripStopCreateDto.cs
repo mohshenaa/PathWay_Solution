@@ -5,7 +5,7 @@ namespace PathWay_Solution.Dto
     public class TripStopCreateDto
     {
         [Required]
-        public int TripId { get; set; }
+        public int RouteId { get; set; }
 
         [Required]
         public int LocationId { get; set; }
@@ -26,7 +26,7 @@ namespace PathWay_Solution.Dto
     public class TripStopResponseDto
     {
         public int TripStopId { get; set; }
-        public int TripId { get; set; }
+        public int RouteId { get; set; }
         public int LocationId { get; set; }
         public string LocationName { get; set; } = null!;
         public int StopOrder { get; set; }

@@ -10,11 +10,25 @@ namespace PathWay_Solution.Models
 
         public int EmployeeId { get; set; }
 
-        [Required]
+        public int Month { get; set; }
+        public int Year { get; set; }
+
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Amount { get; set; }
-        public DateTime SalaryMonth { get; set; }
-        public DateTime PaidDate { get; set; }
+        public decimal BasicAmount { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Bonus { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Deduction { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal NetAmount { get; set; }
+
+        public DateTime? PaidDate { get; set; }
+
+        public string Status { get; set; } = "Pending";
+
         public Employee Employee { get; set; } = null!;
     }
 }

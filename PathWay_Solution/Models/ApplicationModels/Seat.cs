@@ -26,7 +26,7 @@ namespace PathWay_Solution.Models
 
         public int BookingId { get; set; }
         public int TripSeatId { get; set; }
-
+        public decimal PriceAtBooking { get; set; }
         public Booking Booking { get; set; } = null!;
         public TripSeat TripSeat { get; set; } = null!;
     }
@@ -39,7 +39,6 @@ namespace PathWay_Solution.Models
         public int SeatId { get; set; }
 
         public bool IsBooked { get; set; } = false;
-
 
         public bool IsLocked { get; set; } = false; //seat lock
         public DateTime? LockedUntil { get; set; }

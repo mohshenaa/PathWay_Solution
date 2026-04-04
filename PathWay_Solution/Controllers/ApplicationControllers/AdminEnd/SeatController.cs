@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
 using PathWay_Solution.Models;
 
-namespace PathWay_Solution.Controllers.ApplicationControllers
+namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -76,6 +76,8 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             });
         }
 
+       
+
         //Admin can delete seat (rarely needed)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSeat(int id)
@@ -91,5 +93,9 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         }
     }
 
-
+    public class TripSeatDto
+    {
+        public int SeatId { get; set; }
+        public decimal Price { get; set; }
+    }
 }

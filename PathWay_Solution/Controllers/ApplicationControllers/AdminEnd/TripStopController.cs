@@ -4,7 +4,7 @@ using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
 using PathWay_Solution.Models;
 
-namespace PathWay_Solution.Controllers.ApplicationControllers
+namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,15 +22,22 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         [HttpPost]
         public async Task<IActionResult> Create(TripStopCreateDto dto)
         {
-            var trip = await _db.Trip.FindAsync(dto.TripId);
-            if (trip == null) return BadRequest("Trip not found");
+            var trip = await _db.Routes.FindAsync(dto.RouteId);
+            if (trip == null) return BadRequest("Route not found");
 
             var location = await _db.Location.FindAsync(dto.LocationId);
             if (location == null) return BadRequest("Location not found");
 
+            bool exists = await _db.TripStop.AnyAsync(ts =>
+                 ts.RouteId == dto.RouteId &&
+                 ts.StopOrder == dto.StopOrder);
+
+            if (exists)
+                return BadRequest("Stop order already exists for this route");
+
             var stop = new TripStop
             {
-                TripId = dto.TripId,
+                RouteId = dto.RouteId,
                 LocationId = dto.LocationId,
                 StopOrder = dto.StopOrder,
                 BreakDurationMinutes = dto.BreakDurationMinutes
@@ -39,10 +46,10 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             _db.TripStop.Add(stop);
             await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetByTrip), new { tripId = stop.TripId }, new
+            return CreatedAtAction(nameof(GetByRoute), new { tripId = stop.RouteId }, new
             {
                 stop.TripStopId,
-                stop.TripId,
+                stop.RouteId,
                 stop.LocationId,
                 LocationName = location.Name,
                 stop.StopOrder,
@@ -50,17 +57,17 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             });
         }
 
-        [HttpGet("trip/{tripId}")]
-        public async Task<IActionResult> GetByTrip(int tripId)
+        [HttpGet("route/{routeId}")]
+        public async Task<IActionResult> GetByRoute(int routeId)
         {
             var stops = await _db.TripStop
-                .Where(ts => ts.TripId == tripId)
+                .Where(ts => ts.RouteId == routeId)
                 .Include(ts => ts.Location)
                 .OrderBy(ts => ts.StopOrder)
                 .Select(ts => new
                 {
                     ts.TripStopId,
-                    ts.TripId,
+                    ts.RouteId,
                     ts.LocationId,
                     LocationName = ts.Location.Name,
                     ts.StopOrder,
@@ -89,7 +96,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             return Ok(new
             {
                 stop.TripStopId,
-                stop.TripId,
+                stop.RouteId,
                 stop.LocationId,
                 LocationName = location.Name,
                 stop.StopOrder,

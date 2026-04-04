@@ -23,9 +23,10 @@ namespace PathWay_Solution.Models.ApplicationModels
         public Trip Trip { get; set; } = null!;
        // public TripSeat? TripSeat { get; set; }
         public CancellationRefund? CancellationRefund { get; set; }
-        public ICollection<BookingSeat>? BookingSeat { get; set; }
+        public ICollection<BookingSeat>? BookingSeats { get; set; }
 
-        public ICollection<Payment>? Payments { get; set; }
+        public Payment? Payment { get; set; }
+        //public ICollection<Payment>? Payments { get; set; }
     }
 
     public enum BookingStatus

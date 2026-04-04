@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
 using PathWay_Solution.Dto;
 using PathWay_Solution.Models;
 
-namespace PathWay_Solution.Controllers.ApplicationControllers
+namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,13 +17,26 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             var routes = await db.Routes
                 .Include(r => r.FromLocation)
                 .Include(r => r.ToLocation)
+                .Include(r => r.TripStops)
+                    .ThenInclude(ts => ts.Location)
                 .Select(r => new
                 {
                     r.RouteId,
                     From = r.FromLocation.Name,
                     To = r.ToLocation.Name,
+                    r.PricePerSeat,
                     r.DistanceInKm,
-                    r.IsActive
+                    r.IsActive,
+                    TripStops = r.TripStops
+                        .OrderBy(ts => ts.StopOrder)
+                        .Select(ts => new
+                        {
+                            ts.TripStopId,
+                            ts.LocationId,
+                            LocationName = ts.Location.Name,
+                            ts.StopOrder,
+                            ts.BreakDurationMinutes
+                        }).ToList()
                 })
                 .ToListAsync();
 
@@ -36,7 +48,8 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
         {
             var route = await db.Routes
                 .Include(r => r.TripStops)
-                .Include(r => r.Trips)
+               .Include(r => r.TripStops)
+                       .ThenInclude(ts => ts.Location)
                 .Include(r => r.Counters)
                 .Include(r => r.TripSchedules)
                 .Include(r => r.FromLocation)
@@ -68,6 +81,8 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             {
                 FromLocationId = dto.FromLocationId,
                 ToLocationId = dto.ToLocationId,
+                //  TripStops= dto.TripStopId,
+                PricePerSeat = dto.PricePerSeat,
                 DistanceInKm = dto.DistanceInKm,
                 IsActive = true
             };
@@ -91,6 +106,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
 
             route.FromLocationId = dto.FromLocationId;
             route.ToLocationId = dto.ToLocationId;
+            route.PricePerSeat = dto.PricePerSeat;
             route.DistanceInKm = dto.DistanceInKm;
             route.IsActive = dto.IsActive;
 
@@ -105,6 +121,8 @@ namespace PathWay_Solution.Controllers.ApplicationControllers
             var route = await db.Routes
                 .Include(r => r.Counters)
                 .Include(r => r.Trips)
+                .Include(r => r.TripStops)
+                .Include(r => r.TripSchedules)
                 .FirstOrDefaultAsync(r => r.RouteId == id);
 
             if (route == null)

@@ -13,7 +13,15 @@ namespace PathWay_Solution.Models.ApplicationModels
         public decimal RefundAmount { get; set; }
         public DateTime RefundDate { get; set; }
         public string Reason { get; set; } = null!;
-        public Booking Booking { get; set; } = null!;
-    }
 
+        public RefundStatus Status { get; set; } = RefundStatus.Pending;
+        public Booking Booking { get; set; } = null!;
+
+    }
+    public enum RefundStatus
+    {
+        Pending,
+        Processed,
+        Rejected
+    }
 }
