@@ -22,7 +22,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
                                            .Select(p => new PassengerReadDto
                                            {
                                                PassengerId = p.PassengerId,
-                                               //     UserId = p.UserId,
+                                               AppUserId = p.AppUserId,
                                                Gender = p.Gender,
                                                UserName = p.AppUser.UserName,
                                                BookingCount = p.Bookings.Count,
@@ -45,7 +45,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers.AdminEnd
                                           .Select(p => new PassengerReadDto
                                           {
                                               PassengerId = p.PassengerId,
-                                              // UserId = p.UserId,
+                                              AppUserId = p.AppUserId,
                                               Gender = p.Gender,
                                               UserName = p.AppUser.UserName,
                                               BookingCount = p.Bookings.Count,

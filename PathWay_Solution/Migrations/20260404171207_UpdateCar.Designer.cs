@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PathWay_Solution.Data;
 
@@ -11,9 +12,11 @@ using PathWay_Solution.Data;
 namespace PathWay_Solution.Migrations
 {
     [DbContext(typeof(PathwayDBContext))]
-    partial class PathwayDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260404171207_UpdateCar")]
+    partial class UpdateCar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,9 +375,6 @@ namespace PathWay_Solution.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DropTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
 
@@ -395,8 +395,6 @@ namespace PathWay_Solution.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("VehicleBookingId");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasIndex("BookingId");
 
@@ -895,10 +893,9 @@ namespace PathWay_Solution.Migrations
 
                     b.HasKey("RouteId");
 
-                    b.HasIndex("ToLocationId");
+                    b.HasIndex("FromLocationId");
 
-                    b.HasIndex("FromLocationId", "ToLocationId")
-                        .IsUnique();
+                    b.HasIndex("ToLocationId");
 
                     b.ToTable("Routes");
                 });
@@ -1422,12 +1419,6 @@ namespace PathWay_Solution.Migrations
 
             modelBuilder.Entity("PathWay_Solution.Models.ApplicationModels.VehicleBooking", b =>
                 {
-                    b.HasOne("PathWay_Solution.Models.IdentityModels.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PathWay_Solution.Models.ApplicationModels.Booking", null)
                         .WithMany("VehicleBookings")
                         .HasForeignKey("BookingId");
@@ -1437,8 +1428,6 @@ namespace PathWay_Solution.Migrations
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AppUser");
 
                     b.Navigation("Vehicle");
                 });

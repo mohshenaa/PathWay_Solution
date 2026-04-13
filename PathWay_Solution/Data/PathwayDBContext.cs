@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Models;
 using PathWay_Solution.Models.ApplicationModels;
 using PathWay_Solution.Models.IdentityModels;
-using System.Reflection.Emit;
 
 namespace PathWay_Solution.Data
 {
@@ -32,8 +31,9 @@ namespace PathWay_Solution.Data
         public DbSet<Routes> Routes { get; set; }
         public DbSet<Salary> Salary { get; set; }
         public DbSet<Seat> Seat { get; set; }
-
+        public DbSet<VehiclePayment> VehiclePayments { get; set; }
         public DbSet<BookingSeat> BookingSeat { get; set; }
+        public DbSet<VehicleBooking> VehicleBookings { get; set; }
         public DbSet<TripSeat> TripSeat { get; set; }
         public DbSet<Trip> Trip { get; set; }
         public DbSet<TripSchedule> TripSchedule { get; set; }
@@ -358,6 +358,8 @@ namespace PathWay_Solution.Data
                 .HasForeignKey(a => a.ToLocationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasIndex(r => new { r.FromLocationId, r.ToLocationId })
+                 .IsUnique();
             });
 
             //;ocation

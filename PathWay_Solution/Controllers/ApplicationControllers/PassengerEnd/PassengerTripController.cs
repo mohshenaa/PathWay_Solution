@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PathWay_Solution.Data;
+using PathWay_Solution.Dto;
 
 namespace PathWay_Solution.Controllers.ApplicationControllers.PassengerEnd
 {
@@ -18,7 +19,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers.PassengerEnd
                 .Include(t => t.TripSeat)
                     .ThenInclude(ts => ts.Seat)
                 .Where(t => t.DepartureTime >= DateTime.Now) // upcoming trips only
-                .Select(t => new TripDto
+                .Select(t => new CreatePassengerTripDto
                 {
                     TripId = t.TripId,
                     Direction = t.TripSchedule.Direction,
@@ -42,7 +43,7 @@ namespace PathWay_Solution.Controllers.ApplicationControllers.PassengerEnd
                 .Include(t => t.TripSeat)
                     .ThenInclude(ts => ts.Seat)
                 .Where(t => t.TripId == id)
-                .Select(t => new TripDto
+                .Select(t => new CreatePassengerTripDto
                 {
                     TripId = t.TripId,
                     Direction = t.TripSchedule.Direction,
@@ -91,25 +92,6 @@ namespace PathWay_Solution.Controllers.ApplicationControllers.PassengerEnd
     }
 
     // DTOs for passenger view
-    public class TripDto
-    {
-        public int TripId { get; set; }
-        public string Direction { get; set; } = null!;
-        public string VehicleName { get; set; } = null!;
-        public DateTime DepartureTime { get; set; }
-        public DateTime ArrivalTime { get; set; }
-        public int TotalSeats { get; set; }
-        public int AvailableSeats { get; set; }
-        public List<SeatDto>? Seats { get; set; }
-    }
-
-    public class SeatDto
-    {
-        public int TripSeatId { get; set; }
-        public string SeatNumber { get; set; } = null!;
-        public bool IsBooked { get; set; }
-        public bool IsLocked { get; set; }
-        public DateTime? LockedUntil { get; set; }
-    }
+   
 }
 

@@ -26,45 +26,7 @@ namespace PathWay_Solution.Services
             _db = db;
         }
 
-        //// Generate seat availability per trip (based on vehicle capacity)
-        //private List<Seat> GenerateTripSeats(int tripId, int vehicleId)
-        //{
-        //    var vehicle = _db.Vehicle.Find(vehicleId);
-        //    if (vehicle == null) throw new Exception("Vehicle not found for seat generation");
-
-        //    int capacity = vehicle.Capacity;
-        //    int seatsPerRow = 4;
-        //    char rowLetter = 'A';
-        //    int currentSeat = 0;
-        //    var seats = new List<Seat>();
-
-        //    while (currentSeat < capacity)
-        //    {
-        //        for (int col = 1; col <= seatsPerRow && currentSeat < capacity; col++)
-        //        {
-        //            bool isWindow = col == 1 || col == 4;
-        //            bool isAisle = col == 2 || col == 3;
-
-        //            seats.Add(new Seat
-        //            {
-        //                TripId = tripId,
-        //                VehicleId = vehicleId,
-        //                Row = rowLetter.ToString(),
-        //                Column = col,
-        //                SeatNumber = $"{rowLetter}{col}",
-        //                IsWindow = isWindow,
-        //                IsAisle = isAisle,
-        //                IsBooked = false
-        //            });
-
-        //            currentSeat++;
-        //        }
-        //        rowLetter++;
-        //    }
-
-        //    return seats;
-        //}
-
+       
         public async Task<TripResponseDto> CreateTripAsync(TripCreateDto dto)
         {
             // Validate existence of Route, Schedule, Vehicle, Driver, Helper

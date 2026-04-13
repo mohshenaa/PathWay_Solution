@@ -36,6 +36,7 @@ namespace PathWay_Solution.Models
         Pending,
         Paid,
         Failed,
-        Refunded
+        Refunded,
+        Unpaid
     }
 }

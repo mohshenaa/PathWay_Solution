@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using PathWay_Solution.Models.IdentityModels;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PathWay_Solution.Models.ApplicationModels
@@ -24,19 +25,19 @@ namespace PathWay_Solution.Models.ApplicationModels
        // public TripSeat? TripSeat { get; set; }
         public CancellationRefund? CancellationRefund { get; set; }
         public ICollection<BookingSeat>? BookingSeats { get; set; }
-
+        public ICollection<VehicleBooking>? VehicleBookings { get; set; }
         public Payment? Payment { get; set; }
         //public ICollection<Payment>? Payments { get; set; }
     }
 
     public enum BookingStatus
     {
-        Confirmed, Cancelled, Pending
+        Pending, Confirmed, Cancelled, Ongoing,Completed
     }
     public enum BookingSource
     {
         Online, Counter, Phone
     }
+    
 
-   
 }
